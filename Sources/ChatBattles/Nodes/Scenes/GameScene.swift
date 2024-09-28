@@ -16,10 +16,11 @@ public final class GameScene: Node2D {
 		addShip(in: viewportRect)
 	}
 
-	public func shootProjectile(from point: Vector2, direction: Vector2) {
+	public func shootProjectile(from ship: ShipCharacter, direction: Vector2) {
 		let projectile = LaserProjectile.instantiate()
 
-		projectile.position = point
+		projectile.shootingShip = ship
+		projectile.position = ship.position
 		projectile.direction = direction
 
 		addChild(node: projectile)

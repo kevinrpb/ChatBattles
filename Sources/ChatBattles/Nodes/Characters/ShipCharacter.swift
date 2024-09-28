@@ -40,7 +40,7 @@ public final class ShipCharacter: CharacterBody2D {
 		shootTimer?.timeout.connect { [weak self] in
 			guard let self else { return }
 
-			self.gameScene?.shootProjectile(from: self.position, direction: self.direction)
+			self.gameScene?.shootProjectile(from: self, direction: self.direction)
 		}
 		shootTimer?.start()
 	}
@@ -48,6 +48,10 @@ public final class ShipCharacter: CharacterBody2D {
 	public override func _physicsProcess(delta: Double) {
 		move(delta: delta)
 		veer(delta: delta)
+	}
+
+	public func handleHit() {
+		// TODO: Handle it
 	}
 
 	private func move(delta: Double) {
