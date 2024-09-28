@@ -2,11 +2,6 @@ import SwiftGodot
 
 @Godot
 public final class ShipCharacter: CharacterBody2D {
-	private var viewport: Viewport? { getViewport() }
-	private var viewportRect: Rect2 {
-		viewport?.getVisibleRect() ?? .init(x: 0, y: 0, width: 1920, height: 1080)
-	}
-
 	private var direction: Vector2 = .random().normalized()
 	private var speed: Double = 150
 
@@ -20,25 +15,34 @@ public final class ShipCharacter: CharacterBody2D {
 	@SceneTree(path: "CollisionShape")
 	var collisionShape: CollisionShape2D?
 
-	@SceneTree(path: "Timer")
-	var timer: Timer?
+	@SceneTree(path: "VeerTimer")
+	var veerTimer: Timer?
 
-	var size: Vector2 {
-		sprite?.texture?.getSize() ?? .zero
-	}
+	@SceneTree(path: "ShootTimer")
+	var shootTimer: Timer?
+
+	var gameScene: GameScene?
 
 	public override func _ready() {
 		rotate(to: direction.angle() + Double.pi / 2)
 		targetDirection = direction
 
-		timer?.timeout.connect {
-			self.startVeering()
-			self.timer?.waitTime = self.veerTime
-			self.timer?.start()
-		}
-		timer?.start()
+		veerTimer?.timeout.connect { [weak self] in
+			guard let self else { return }
 
+			self.startVeering()
+			self.veerTimer?.waitTime = self.veerTime
+			self.veerTimer?.start()
+		}
+		veerTimer?.start()
 		self.startVeering()
+
+		shootTimer?.timeout.connect { [weak self] in
+			guard let self else { return }
+
+			self.gameScene?.shootProjectile(from: self.position, direction: self.direction)
+		}
+		shootTimer?.start()
 	}
 
 	public override func _physicsProcess(delta: Double) {
@@ -80,6 +84,8 @@ public final class ShipCharacter: CharacterBody2D {
 		veerTime = Double.random(in: 0.5...5)
 	}
 }
+
+extension ShipCharacter: SpriteSized, WithinViewport {}
 
 extension ShipCharacter: LoadableScene {
 	static let path = "Scenes/Ship.tscn"

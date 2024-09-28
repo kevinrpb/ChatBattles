@@ -16,7 +16,9 @@ position = Vector2(-7.10543e-15, 8)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_gc0wq")
 
-[node name="Timer" type="Timer" parent="."]
+[node name="VeerTimer" type="Timer" parent="."]
 process_callback = 0
 wait_time = 2.0
 one_shot = true
+
+[node name="ShootTimer" type="Timer" parent="."]

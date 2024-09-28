@@ -2,21 +2,28 @@ import SwiftGodot
 
 @Godot
 public final class GameScene: Node2D {
-	private var viewport: Viewport? { getViewport() }
-
 	public override func _ready() {
 	}
 
 	public override func _unhandledInput(event: InputEvent?) {
 		guard
-			let viewport,
 			let event = event as? InputEventMouseButton,
 			event.pressed, !event.isEcho(), event.buttonIndex == .left
 		else {
 			return
 		}
 
-		addShip(in: viewport.getVisibleRect())
+		addShip(in: viewportRect)
+	}
+
+	public func shootProjectile(from point: Vector2, direction: Vector2) {
+		let projectile = LaserProjectile.instantiate()
+
+		projectile.position = point
+		projectile.direction = direction
+
+		addChild(node: projectile)
+		animateIn(projectile, duration: 0.2)
 	}
 
 	private func addShips(_ n: Int, in rect: Rect2, animate: Bool = true) {
@@ -33,22 +40,30 @@ public final class GameScene: Node2D {
 	private func addShip(at position: Vector2, animate: Bool = true) {
 		let ship = ShipCharacter.instantiate()
 
+		ship.gameScene = self
+
 		ship.position.x = position.x
 		ship.position.y = position.y
-
-		ship.modulate.alpha = animate ? 0 : 1
 
 		addChild(node: ship)
 
 		if animate {
-			let _ = ship.createTween()?
-				.tweenProperty(
-					object: ship, property: "modulate:a", finalVal: .init(1.0), duration: 1.0)?
-				.setTrans(.quad)?
-				.setEase(.in)
+			animateIn(ship)
 		}
 	}
+
+	private func animateIn(_ node: Node2D, duration: Double = 1.0) {
+		node.modulate.alpha = 0
+
+		let _ = node.createTween()?
+			.tweenProperty(
+				object: node, property: "modulate:a", finalVal: .init(1.0), duration: duration)?
+			.setTrans(.quad)?
+			.setEase(.in)
+	}
 }
+
+extension GameScene: WithinViewport {}
 
 extension GameScene: LoadableScene {
 	static let path = "Scenes/GameScene.tscn"

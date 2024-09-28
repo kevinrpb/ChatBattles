@@ -1,0 +1,25 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"type": "swift",
+			"args": [
+				"build",
+				"-c",
+				"debug",
+				"--product",
+				"ChatBattles",
+				"-Xswiftc",
+				"-diagnostic-style=llvm"
+			],
+			"env": {},
+			"cwd": ".",
+			"disableTaskQueue": true,
+			"showBuildStatus": "swiftStatus",
+			"group": "build",
+			"problemMatcher": [],
+			"label": "swift: Build ChatBattles",
+			"detail": "swift build -c debug -Xswiftc -diagnostic-style=llvm"
+		}
+	]
+}

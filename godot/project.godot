@@ -14,6 +14,10 @@ config/name="ChatBattles"
 run/main_scene="res://Scenes/GameScene.tscn"
 config/features=PackedStringArray("4.2")
 
+[autoload]
+
+DebugMenu="*res://addons/debug_menu/debug_menu.tscn"
+
 [display]
 
 window/size/viewport_width=1920
@@ -22,6 +26,10 @@ window/size/viewport_height=1080
 [dotnet]
 
 project/assembly_name="ChatBattles"
+
+[editor_plugins]
+
+enabled=PackedStringArray("res://addons/debug_menu/plugin.cfg")
 
 [rendering]
 

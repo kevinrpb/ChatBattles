@@ -7,7 +7,7 @@
 			"cwd": "${workspaceFolder}",
 			"name": "Debug ChatBattles",
 			"program": "/usr/local/bin/godot",
-			"preLaunchTask": "swift: Build All"
+			"preLaunchTask": "swift: Build ChatBattles"
 		},
 		{
 			"type": "lldb",

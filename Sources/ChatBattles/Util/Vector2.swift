@@ -30,4 +30,20 @@ extension Vector2 {
 
 		return newVector
 	}
+
+	func isOutside(_ rect: Rect2, margin: Vector2 = .zero) -> Bool {
+		if x < -1 * margin.x {
+			return true
+		} else if x > (rect.size.x + margin.x) {
+			return true
+		}
+
+		if y < -1 * margin.y {
+			return true
+		} else if y > (rect.size.y + margin.y) {
+			return true
+		}
+
+		return false
+	}
 }
