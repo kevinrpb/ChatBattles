@@ -1,0 +1,19 @@
+{
+	"configurations": [
+		{
+			"type": "lldb",
+			"request": "launch",
+			"args": ["--path", "${workspaceFolder}/godot/"],
+			"cwd": "${workspaceFolder}",
+			"name": "Debug ChatBattles",
+			"program": "/usr/local/bin/godot",
+			"preLaunchTask": "swift: Build All"
+		},
+		{
+			"type": "lldb",
+			"request": "attach",
+			"name": "Attach to PID",
+			"pid": "${command:pickProcess}"
+		}
+	]
+}

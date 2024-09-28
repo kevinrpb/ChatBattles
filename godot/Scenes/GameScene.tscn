@@ -1,0 +1,12 @@
+[gd_scene load_steps=2 format=3 uid="uid://dog7qwoxj54p8"]
+
+[ext_resource type="Texture2D" uid="uid://ctwtgww8kr2fx" path="res://Assets/Backgrounds/blue.png" id="1_vn4q0"]
+
+[node name="GameScene" type="GameScene"]
+
+[node name="Background" type="TextureRect" parent="."]
+texture_repeat = 2
+offset_right = 1920.0
+offset_bottom = 1080.0
+texture = ExtResource("1_vn4q0")
+stretch_mode = 1

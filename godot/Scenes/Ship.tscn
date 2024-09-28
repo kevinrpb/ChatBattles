@@ -1,0 +1,17 @@
+[gd_scene load_steps=3 format=3 uid="uid://dxt0phrtpgq3r"]
+
+[ext_resource type="Texture2D" uid="uid://hsyutrr8m7id" path="res://Assets/Ships/playerShip1_red.png" id="1_4h4q6"]
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gc0wq"]
+radius = 23.0
+height = 102.0
+
+[node name="Ship" type="ShipCharacter"]
+
+[node name="Sprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_4h4q6")
+
+[node name="CollisionShape" type="CollisionShape2D" parent="."]
+position = Vector2(-7.10543e-15, 8)
+rotation = 1.5708
+shape = SubResource("CapsuleShape2D_gc0wq")
