@@ -3,9 +3,7 @@
 [ext_resource type="Theme" uid="uid://busl05vigf3c8" path="res://Theme/KenneyUI.tres" id="1_f4hq0"]
 [ext_resource type="Texture2D" uid="uid://br188k6tq88fh" path="res://Assets/UI/cross.png" id="2_74w5g"]
 
-[node name="SettingsMenu" type="Control"]
-layout_mode = 3
-anchors_preset = 0
+[node name="SettingsMenu" type="SettingsMenu"]
 theme = ExtResource("1_f4hq0")
 
 [node name="PanelContainer" type="PanelContainer" parent="."]
@@ -27,7 +25,8 @@ layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
 text = "Channel"
 
-[node name="LineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+[node name="ChannelText" type="LineEdit" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
 custom_minimum_size = Vector2(200, 2.08165e-12)
 layout_mode = 2
 placeholder_text = "name"
@@ -39,12 +38,14 @@ expand_to_text_length = true
 layout_mode = 2
 alignment = 1
 
-[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer2"]
+[node name="ConnectButton" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
 layout_mode = 2
 text = "Connect"
 alignment = 2
 
-[node name="TextureButton" type="TextureButton" parent="."]
+[node name="CloseButton" type="TextureButton" parent="."]
+unique_name_in_owner = true
 modulate = Color(0.341749, 0.344606, 0.417963, 1)
 layout_mode = 0
 offset_left = 6.0

@@ -8,33 +8,26 @@ public final class GameScene: Node2D {
 	var settingsButton: Button?
 
 	@SceneTree(path: "%SettingsMenu")
-	var settingsMenu: Control?
+	var settingsMenu: SettingsMenu?
+
+	@SceneTree(path: "%StartGameButton")
+	var startGameButton: Button?
 
 	public override func _ready() {
+		startGameButton?.disabled = true
+
 		settingsButton?.pressed.connect {
-			// let _ = settingsMenu?.createTween()?
-			// .tweenProperty(object: settingsMenu, property: NodePath, finalVal: Variant, duration: Double)
 			self.settingsButton?.releaseFocus()
-			self.settingsMenu?.show()
+			self.toggleSettingsMenu()
 		}
 
-		Task {
-			do {
-				try await twitchManager.connect()
-				try await twitchManager.join("kevinrpb")
-			} catch {
-				GD.pushError("IRC Error: \(error)")
-			}
-		}
+		settingsMenu?.connect(signal: SettingsMenu.onClose, to: self, method: "onSettingsClose")
+		settingsMenu?.connect(signal: SettingsMenu.onConnect, to: self, method: "onSettingsConnect")
 	}
 
 	public override func _process(delta: Double) {
 		if Input.isActionJustPressed(action: "settings_toggle") {
-			if settingsMenu?.isVisibleInTree() ?? false {
-				settingsMenu?.hide()
-			} else {
-				settingsMenu?.show()
-			}
+			toggleSettingsMenu()
 		}
 	}
 
@@ -65,6 +58,17 @@ public final class GameScene: Node2D {
 
 		addChild(node: projectile)
 		animateIn(projectile, duration: 0.2)
+	}
+
+	@Callable
+	func onSettingsClose() {
+		toggleSettingsMenu()
+	}
+
+	@Callable
+	func onSettingsConnect(_ channel: String) {
+		settingsMenu?.disable()
+		connectToChat(channel)
 	}
 
 	private func addShips(_ n: Int, in rect: Rect2, animate: Bool = true) {
@@ -101,6 +105,29 @@ public final class GameScene: Node2D {
 				object: node, property: "modulate:a", finalVal: .init(1.0), duration: duration)?
 			.setTrans(.quad)?
 			.setEase(.in)
+	}
+
+	private func toggleSettingsMenu() {
+		if settingsMenu?.isVisibleInTree() ?? false {
+			settingsMenu?.hide()
+		} else {
+			settingsMenu?.show()
+		}
+	}
+
+	private func connectToChat(_ channel: String) {
+		GD.print("Connecting to <\(channel)>...")
+
+		Task { @MainActor in
+			do {
+				try await twitchManager.connect()
+				try await twitchManager.join(channel)
+
+				settingsMenu?.enable()
+			} catch {
+				GD.pushError("IRC Error: \(error)")
+			}
+		}
 	}
 }
 
