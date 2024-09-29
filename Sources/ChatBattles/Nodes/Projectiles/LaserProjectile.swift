@@ -2,14 +2,12 @@ import SwiftGodot
 
 @Godot
 public final class LaserProjectile: Area2D {
-	private var viewport: Viewport? { getViewport() }
-	private var viewportRect: Rect2 {
-		viewport?.getVisibleRect() ?? .init(x: 0, y: 0, width: 1920, height: 1080)
-	}
-
 	private var hasCollided: Bool = false
 	private var disappearTween: Tweener?
 	private var speed: Double = 600
+
+	var type: TextureManager.LaserType = .random()
+	var color: TextureManager.LaserColor = .random()
 
 	var shootingShip: ShipCharacter?
 	var direction: Vector2 = .zero.normalized()
@@ -23,6 +21,7 @@ public final class LaserProjectile: Area2D {
 	var gameScene: GameScene?
 
 	public override func _ready() {
+		sprite?.texture = TextureManager.laserTexture(type: type, color: color)
 		sprite?.rotation = direction.angle() + Double.pi / 2
 	}
 
@@ -69,7 +68,7 @@ public final class LaserProjectile: Area2D {
 	}
 }
 
-extension LaserProjectile: SpriteSized {}
+extension LaserProjectile: SpriteSized, WithinViewport {}
 
 extension LaserProjectile: LoadableScene {
 	static let path = "Scenes/LaserProjectile.tscn"

@@ -16,10 +16,17 @@ public final class GameScene: Node2D {
 		addShip(in: viewportRect)
 	}
 
-	public func shootProjectile(from ship: ShipCharacter, direction: Vector2) {
+	public func shootProjectile(
+		from ship: ShipCharacter,
+		direction: Vector2,
+		type: TextureManager.LaserType,
+		color: TextureManager.LaserColor
+	) {
 		let projectile = LaserProjectile.instantiate()
 
 		projectile.shootingShip = ship
+		projectile.type = type
+		projectile.color = color
 		projectile.position = ship.position
 		projectile.direction = direction
 

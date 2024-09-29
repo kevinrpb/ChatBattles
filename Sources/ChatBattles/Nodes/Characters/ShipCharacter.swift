@@ -2,6 +2,12 @@ import SwiftGodot
 
 @Godot
 public final class ShipCharacter: CharacterBody2D {
+	private let type: TextureManager.ShipType = .random()
+	private let color: TextureManager.ShipColor = .random()
+
+	private var laserType: TextureManager.LaserType = .random()
+	private var laserColor: TextureManager.LaserColor = .random()
+
 	private var direction: Vector2 = .random().normalized()
 	private var speed: Double = 150
 
@@ -24,6 +30,8 @@ public final class ShipCharacter: CharacterBody2D {
 	var gameScene: GameScene?
 
 	public override func _ready() {
+		sprite?.texture = TextureManager.shipTexture(type: type, color: color)
+
 		rotate(to: direction.angle() + Double.pi / 2)
 		targetDirection = direction
 
@@ -40,7 +48,12 @@ public final class ShipCharacter: CharacterBody2D {
 		shootTimer?.timeout.connect { [weak self] in
 			guard let self else { return }
 
-			self.gameScene?.shootProjectile(from: self, direction: self.direction)
+			self.gameScene?.shootProjectile(
+				from: self,
+				direction: self.direction,
+				type: laserType,
+				color: laserColor
+			)
 		}
 		shootTimer?.start()
 	}
