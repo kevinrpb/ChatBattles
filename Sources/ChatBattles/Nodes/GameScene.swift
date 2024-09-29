@@ -51,7 +51,21 @@ public final class GameScene: Node2D {
 	@SceneTree(path: "%WinnerUI")
 	var winnerUI: Control?
 
+	@SceneTree(path: "%AboutUI")
+	var aboutUI: Control?
+
+	@SceneTree(path: "%InfoButton")
+	var infoButton: Button?
+
+	@SceneTree(path: "%AboutCloseButton")
+	var aboutCloseButton: TextureButton?
+
+	@SceneTree(path: "%GitHubButton")
+	var githubButton: Button?
+
 	public override func _ready() {
+		settingsMenu?.hide()
+
 		settingsButton?.pressed.connect {
 			self.settingsButton?.releaseFocus()
 			self.toggleSettingsMenu()
@@ -80,12 +94,28 @@ public final class GameScene: Node2D {
 			}
 		}
 
+		aboutUI?.hide()
+		infoButton?.pressed.connect {
+			self.toggleAboutUI()
+		}
+		aboutCloseButton?.pressed.connect {
+			self.toggleAboutUI()
+		}
+
+		githubButton?.pressed.connect {
+			let _ = OS.shellOpen(uri: "https://github.com/kevinrpb/ChatBattles")
+		}
+
 		uiTransition()
 	}
 
 	public override func _process(delta: Double) {
 		if Input.isActionJustPressed(action: "settings_toggle") {
-			toggleSettingsMenu()
+			if aboutUI?.visible ?? false {
+				toggleAboutUI()
+			} else {
+				toggleSettingsMenu()
+			}
 		}
 
 		if currentState == .startingGame {
@@ -403,6 +433,14 @@ public final class GameScene: Node2D {
 			settingsMenu?.hide()
 		} else {
 			settingsMenu?.show()
+		}
+	}
+
+	private func toggleAboutUI() {
+		if aboutUI?.isVisibleInTree() ?? false {
+			aboutUI?.hide()
+		} else {
+			aboutUI?.show()
 		}
 	}
 

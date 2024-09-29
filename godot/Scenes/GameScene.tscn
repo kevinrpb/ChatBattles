@@ -1,12 +1,16 @@
-[gd_scene load_steps=6 format=3 uid="uid://dog7qwoxj54p8"]
+[gd_scene load_steps=10 format=3 uid="uid://dog7qwoxj54p8"]
 
 [ext_resource type="Texture2D" uid="uid://ctwtgww8kr2fx" path="res://Assets/Backgrounds/blue.png" id="1_vn4q0"]
 [ext_resource type="Theme" uid="uid://busl05vigf3c8" path="res://Theme/KenneyUI.tres" id="2_8rffr"]
 [ext_resource type="PackedScene" uid="uid://c38wyybqaf62p" path="res://Scenes/SettingsMenu.tscn" id="2_s3imb"]
 [ext_resource type="Texture2D" uid="uid://cm4875tt2awek" path="res://Assets/UI/gear.png" id="3_remi4"]
+[ext_resource type="Texture2D" uid="uid://b6x5fd1cep0f1" path="res://Assets/UI/information.png" id="5_herw6"]
+[ext_resource type="Texture2D" uid="uid://br188k6tq88fh" path="res://Assets/UI/cross.png" id="6_8j58p"]
+[ext_resource type="Texture2D" uid="uid://ckfuxdhsj4c23" path="res://Assets/UI/home.png" id="6_ji8x3"]
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_0a44a"]
-draw_center = false
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_i3152"]
+
+[sub_resource type="StyleBoxEmpty" id="StyleBoxEmpty_hqyru"]
 
 [node name="GameScene" type="GameScene"]
 metadata/_edit_horizontal_guides_ = [540.0]
@@ -41,7 +45,6 @@ layer = 0
 
 [node name="WinnerUI" type="PanelContainer" parent="BackLayer"]
 unique_name_in_owner = true
-z_index = 2
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
@@ -78,13 +81,12 @@ unique_name_in_owner = true
 layer = 2
 
 [node name="TopLeftUI" type="PanelContainer" parent="TopLayer"]
-z_index = 10
 offset_left = 20.0
 offset_top = 20.0
 offset_right = 238.0
 offset_bottom = 62.0
 theme = ExtResource("2_8rffr")
-theme_override_styles/panel = SubResource("StyleBoxFlat_0a44a")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_i3152")
 
 [node name="HBoxContainer" type="HBoxContainer" parent="TopLayer/TopLeftUI"]
 layout_mode = 2
@@ -97,9 +99,18 @@ layout_mode = 2
 
 [node name="TextureRect" type="TextureRect" parent="TopLayer/TopLeftUI/HBoxContainer/SettingsButton"]
 modulate = Color(0, 0, 0, 1)
-layout_mode = 0
-offset_right = 40.0
-offset_bottom = 40.0
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
 texture = ExtResource("3_remi4")
 expand_mode = 1
 
@@ -112,6 +123,45 @@ text = "Start Game"
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
+
+[node name="TopRightUI" type="PanelContainer" parent="TopLayer"]
+anchors_preset = 1
+anchor_left = 1.0
+anchor_right = 1.0
+offset_left = -238.0
+offset_top = 20.0
+offset_right = -20.0
+offset_bottom = 67.0
+grow_horizontal = 0
+theme = ExtResource("2_8rffr")
+theme_override_styles/panel = SubResource("StyleBoxEmpty_hqyru")
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="TopLayer/TopRightUI"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 2
+
+[node name="InfoButton" type="Button" parent="TopLayer/TopRightUI/HBoxContainer2"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(42, 42)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="TopLayer/TopRightUI/HBoxContainer2/InfoButton"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("5_herw6")
+expand_mode = 1
 
 [node name="GameTimerUI" type="Control" parent="TopLayer"]
 unique_name_in_owner = true
@@ -168,3 +218,83 @@ theme_override_font_sizes/font_size = 42
 text = "30S"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="AboutUI" type="Control" parent="TopLayer"]
+unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -14.0
+offset_top = -15.0
+offset_right = -14.0
+offset_bottom = -15.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="PanelContainer" type="PanelContainer" parent="TopLayer/AboutUI"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_8rffr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="TopLayer/AboutUI/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+theme_override_constants/separation = 30
+alignment = 1
+
+[node name="RichTextLabel" type="RichTextLabel" parent="TopLayer/AboutUI/PanelContainer/VBoxContainer"]
+custom_minimum_size = Vector2(300, 2.08165e-12)
+layout_mode = 2
+theme_override_colors/default_color = Color(0.6, 0.603922, 0.686275, 1)
+bbcode_enabled = true
+text = "[font_size=42]ChatBattles[/font_size]
+A Twitch chat game by [url=https://kevinrpb.me]kevinrpb[/url].
+
+All assest by [url=https://kenney.nl/]kenney.nl[/url] under CC0."
+fit_content = true
+
+[node name="HBoxContainer" type="HBoxContainer" parent="TopLayer/AboutUI/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_constants/separation = 12
+alignment = 1
+
+[node name="GitHubButton" type="Button" parent="TopLayer/AboutUI/PanelContainer/VBoxContainer/HBoxContainer"]
+unique_name_in_owner = true
+custom_minimum_size = Vector2(42, 42)
+layout_mode = 2
+
+[node name="TextureRect" type="TextureRect" parent="TopLayer/AboutUI/PanelContainer/VBoxContainer/HBoxContainer/GitHubButton"]
+modulate = Color(0, 0, 0, 1)
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -20.0
+offset_top = -20.0
+offset_right = 20.0
+offset_bottom = 20.0
+grow_horizontal = 2
+grow_vertical = 2
+texture = ExtResource("6_ji8x3")
+expand_mode = 1
+
+[node name="AboutCloseButton" type="TextureButton" parent="TopLayer/AboutUI"]
+unique_name_in_owner = true
+modulate = Color(0.341749, 0.344606, 0.417963, 1)
+offset_left = -174.0
+offset_top = -116.0
+offset_right = -153.0
+offset_bottom = -95.0
+texture_normal = ExtResource("6_8j58p")
+ignore_texture_size = true
+stretch_mode = 0
