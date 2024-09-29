@@ -19,6 +19,8 @@ public final class TextureManager {
 
 	public enum LaserType: Int, Equatable, CaseIterable {
 		case one = 1
+		case two = 2
+		case three = 3
 	}
 
 	public enum LaserColor: String, Equatable, CaseIterable {
@@ -98,6 +100,12 @@ private extension TextureManager {
 	static let laserTexturePaths: [LaserType: [LaserColor: String]] = [
 		.one: [
 			.red: "Lasers/laserRed01.png"
+		],
+		.two: [
+			.red: "Lasers/laserRed02.png"
+		],
+		.three: [
+			.red: "Lasers/laserRed03.png"
 		]
 	]
 }
