@@ -101,7 +101,7 @@ public final class GameScene: Node2D {
 			return
 		}
 
-		addShip(at: viewportRect.getCenter())
+		addShip(at: viewportRect.getCenter(), tint: "#aaa")
 		repositionShipsInCircle()
 	}
 
@@ -151,7 +151,11 @@ public final class GameScene: Node2D {
 	}
 
 	@Callable
-	func onChatMessage(_ displayName: String, _ message: String) {
+	func onChatMessage(
+		_ displayName: String,
+		_ message: String,
+		_ colorHex: String
+	) {
 		guard
 			currentState == .startingGame,
 			let firstWord = message.split(separator: " ").first?.trimmingCharacters(
@@ -162,7 +166,11 @@ public final class GameScene: Node2D {
 
 		GD.pushWarning("Joining user <\(displayName)>")
 
-		addShip(at: viewportRect.getCenter(), named: displayName, activate: false)
+		addShip(
+			at: viewportRect.getCenter(),
+			named: displayName,
+			tint: colorHex.isEmpty ? nil : colorHex
+		)
 		repositionShipsInCircle()
 	}
 
@@ -257,12 +265,18 @@ public final class GameScene: Node2D {
 		let x = Float.random(in: 0...rect.size.x)
 		let y = Float.random(in: 0...rect.size.y)
 
-		addShip(at: Vector2(x: x, y: y), activate: true, animate: animate)
+		addShip(
+			at: Vector2(x: x, y: y),
+			tint: "#aaa",
+			activate: true,
+			animate: animate
+		)
 	}
 
 	private func addShip(
 		at position: Vector2,
 		named name: String? = nil,
+		tint colorHex: String? = nil,
 		activate: Bool = false,
 		animate: Bool = true
 	) {
@@ -279,6 +293,15 @@ public final class GameScene: Node2D {
 		} else {
 			ship.displayName = UUID().uuidString
 			ship.hideName()
+		}
+
+		if let colorHex, !colorHex.trimmingCharacters(in: .whitespaces).isEmpty {
+			// Get color from the hex value, but then attenuate its saturation
+			var color = Color(code: colorHex, alpha: 0.1)
+			color = Color.fromHsv(
+				h: Double(color.hue), s: 0.5 * Double(color.saturation), v: Double(color.value))
+
+			ship.modulate = color
 		}
 
 		ships[ship.displayName] = ship

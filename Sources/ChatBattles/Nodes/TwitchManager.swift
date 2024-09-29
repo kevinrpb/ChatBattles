@@ -13,6 +13,7 @@ final class TwitchManager: Node {
 		arguments: [
 			"user": String.self,
 			"message": String.self,
+			"color": String.self,
 		])
 
 	private var ircClient: TwitchIRCClient?
@@ -25,7 +26,7 @@ final class TwitchManager: Node {
 		ircClient = try? await TwitchIRCClient(.anonymous)
 
 		try await connectIRC()
-		try await join(Self.fakeChannel) // This keeps the connection alive
+		try await join(Self.fakeChannel)  // This keeps the connection alive
 	}
 
 	@MainActor
@@ -114,6 +115,8 @@ final class TwitchManager: Node {
 			"[\(privateMessage.channel)] Got message from <\(privateMessage.displayName)>: \(privateMessage.message)"
 		)
 
-		emit(signal: TwitchManager.onMessage, privateMessage.displayName, privateMessage.message)
+		emit(
+			signal: TwitchManager.onMessage, privateMessage.displayName, privateMessage.message,
+			privateMessage.color)
 	}
 }
