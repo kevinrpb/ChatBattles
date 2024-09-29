@@ -32,3 +32,13 @@ wait_time = 2.0
 one_shot = true
 
 [node name="ShootTimer" type="Timer" parent="."]
+
+[node name="NameLabel" type="Label" parent="."]
+offset_left = -70.0
+offset_top = 57.0
+offset_right = 70.0
+offset_bottom = 80.0
+text = "NameHere"
+horizontal_alignment = 1
+vertical_alignment = 1
+text_overrun_behavior = 3

@@ -2,6 +2,8 @@ import SwiftGodot
 
 @Godot
 public final class ShipCharacter: CharacterBody2D {
+	#signal("onWillFree", arguments: ["displayName": String.self])
+
 	private static let maxHealthPoints = 6
 
 	private let type: TextureManager.ShipType = .random()
@@ -31,6 +33,9 @@ public final class ShipCharacter: CharacterBody2D {
 	@SceneTree(path: "HealthBar")
 	var healthBar: ProgressBar?
 
+	@SceneTree(path: "NameLabel")
+	var nameLabel: Label?
+
 	@SceneTree(path: "VeerTimer")
 	var veerTimer: Timer?
 
@@ -38,6 +43,11 @@ public final class ShipCharacter: CharacterBody2D {
 	var shootTimer: Timer?
 
 	var gameScene: GameScene?
+	var displayName: String! {
+		didSet {
+			nameLabel?.text = displayName
+		}
+	}
 
 	public override func _ready() {
 		shipSprite?.texture = TextureManager.shipTexture(type: type, color: color)
@@ -85,6 +95,14 @@ public final class ShipCharacter: CharacterBody2D {
 		if healthPoints < 1 {
 			disappear()
 		}
+	}
+
+	public func showName() {
+		nameLabel?.visible = true
+	}
+
+	public func hideName() {
+		nameLabel?.visible = false
 	}
 
 	private func move(delta: Double) {
@@ -153,6 +171,7 @@ public final class ShipCharacter: CharacterBody2D {
 			.setTrans(.quad)
 
 		disappearTween?.finished.connect {
+			self.emit(signal: ShipCharacter.onWillFree, self.displayName)
 			self.queueFree()
 		}
 	}
