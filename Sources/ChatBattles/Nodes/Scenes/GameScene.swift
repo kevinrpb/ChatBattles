@@ -2,7 +2,17 @@ import SwiftGodot
 
 @Godot
 public final class GameScene: Node2D {
+	private var twitchManager = TwitchManager()
+
 	public override func _ready() {
+		Task {
+			do {
+				try await twitchManager.connect()
+				try await twitchManager.join("kevinrpb")
+			} catch {
+				GD.pushError("IRC Error: \(error)")
+			}
+		}
 	}
 
 	public override func _unhandledInput(event: InputEvent?) {
