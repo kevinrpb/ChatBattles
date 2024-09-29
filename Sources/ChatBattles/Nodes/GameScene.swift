@@ -15,6 +15,8 @@ public final class GameScene: Node2D {
 		case finishedGame
 	}
 
+	private static let maxShips = 20
+
 	private var previousState: State = .initial
 	private var currentState: State = .initial
 
@@ -75,7 +77,7 @@ public final class GameScene: Node2D {
 			return
 		}
 
-		addShip(in: viewportRect)
+		addRandomShip(in: viewportRect)
 	}
 
 	public func shootProjectile(
@@ -138,8 +140,21 @@ public final class GameScene: Node2D {
 	}
 
 	@Callable
+	func setupInitialShips() {
+		for (_, ship) in ships {
+			ship.destroy()
+		}
+
+		addRandomShips(16, in: viewportRect)
+	}
+
+	@Callable
 	func onShipWillFree(_ displayName: String) {
 		ships.removeValue(forKey: displayName)
+
+		if ships.count < Self.maxShips {
+			addRandomShips(Self.maxShips - ships.count, in: viewportRect)
+		}
 	}
 
 	private func uiTransition() {
@@ -151,6 +166,8 @@ public final class GameScene: Node2D {
 			settingsMenu?.enable()
 			settingsMenu?.showConnect()
 			startGameButton?.disabled = true
+
+			let _ = callDeferred(method: "setupInitialShips")
 
 		// Chat
 		case (_, .joiningChat):
@@ -176,18 +193,23 @@ public final class GameScene: Node2D {
 		}
 	}
 
-	private func addShips(_ n: Int, in rect: Rect2, animate: Bool = true) {
-		for _ in 0..<n { addShip(in: rect, animate: animate) }
+	private func addRandomShips(_ n: Int, in rect: Rect2, animate: Bool = true) {
+		for _ in 0..<n { addRandomShip(in: rect, animate: animate) }
 	}
 
-	private func addShip(in rect: Rect2, animate: Bool = true) {
+	private func addRandomShip(in rect: Rect2, animate: Bool = true) {
 		let x = Float.random(in: 0...rect.size.x)
 		let y = Float.random(in: 0...rect.size.y)
 
-		addShip(at: Vector2(x: x, y: y), animate: animate)
+		addShip(at: Vector2(x: x, y: y), activate: true, animate: animate)
 	}
 
-	private func addShip(at position: Vector2, with name: String? = nil, animate: Bool = true) {
+	private func addShip(
+		at position: Vector2,
+		with name: String? = nil,
+		activate: Bool = false,
+		animate: Bool = true
+	) {
 		let ship = ShipCharacter.instantiate()
 
 		ship.gameScene = self
@@ -208,9 +230,8 @@ public final class GameScene: Node2D {
 
 		addChild(node: ship)
 
-		if animate {
-			animateIn(ship)
-		}
+		if animate { animateIn(ship) }
+		if activate { ship.activate() }
 	}
 
 	private func animateIn(_ node: Node2D, duration: Double = 1.0) {

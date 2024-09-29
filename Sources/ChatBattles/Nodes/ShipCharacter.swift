@@ -12,6 +12,8 @@ public final class ShipCharacter: CharacterBody2D {
 	private var laserType: TextureManager.LaserType = .random()
 	private var laserColor: TextureManager.LaserColor = .random()
 
+	private var active: Bool = false
+
 	private var direction: Vector2 = .random().normalized()
 	private var speed: Double = 150
 
@@ -65,10 +67,9 @@ public final class ShipCharacter: CharacterBody2D {
 			self.veerTimer?.start()
 		}
 		veerTimer?.start()
-		self.startVeering()
 
 		shootTimer?.timeout.connect { [weak self] in
-			guard let self else { return }
+			guard let self, self.active else { return }
 
 			self.gameScene?.shootProjectile(
 				from: self,
@@ -85,6 +86,14 @@ public final class ShipCharacter: CharacterBody2D {
 		veer(delta: delta)
 	}
 
+	public func activate() {
+		active = true
+	}
+
+	public func deactivate() {
+		active = false
+	}
+
 	public func handleHit() {
 		healthPoints -= 1
 
@@ -97,6 +106,10 @@ public final class ShipCharacter: CharacterBody2D {
 		}
 	}
 
+	public func destroy() {
+		disappear()
+	}
+
 	public func showName() {
 		nameLabel?.visible = true
 	}
@@ -106,11 +119,15 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	private func move(delta: Double) {
+		guard active else { return }
+
 		let newPosition = position + direction * (delta * speed)
 		position = newPosition.wrapping(viewportRect, margin: size)
 	}
 
 	private func veer(delta: Double) {
+		guard active else { return }
+
 		let ratio = delta / veerTime
 		let angle = ratio * veerAngle
 
@@ -130,12 +147,12 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	private func startVeering() {
-		guard Bool.random() else {
+		guard active, Bool.random() else {
 			veerTime = Double.random(in: 0.5...2)
 			return
 		}
 
-		veerAngle = Double.random(in: -1...1) * Double.pi
+		veerAngle = Double.random(in: -1...1) * Double.pi / 2
 		targetDirection = direction.rotated(angle: veerAngle)
 		veerTime = Double.random(in: 0.5...5)
 	}
