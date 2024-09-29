@@ -2,6 +2,8 @@ import SwiftGodot
 
 @Godot
 public final class ShipCharacter: CharacterBody2D {
+	private static let maxHealthPoints = 6
+
 	private let type: TextureManager.ShipType = .random()
 	private let color: TextureManager.ShipColor = .random()
 
@@ -15,11 +17,16 @@ public final class ShipCharacter: CharacterBody2D {
 	private var veerAngle: Double = .zero
 	private var veerTime: Double = 0.5
 
+	private var healthPoints = ShipCharacter.maxHealthPoints
+
 	@SceneTree(path: "Sprite")
 	var sprite: Sprite2D?
 
 	@SceneTree(path: "CollisionShape")
 	var collisionShape: CollisionShape2D?
+
+	@SceneTree(path: "HealthBar")
+	var healthBar: ProgressBar?
 
 	@SceneTree(path: "VeerTimer")
 	var veerTimer: Timer?
@@ -31,6 +38,8 @@ public final class ShipCharacter: CharacterBody2D {
 
 	public override func _ready() {
 		sprite?.texture = TextureManager.shipTexture(type: type, color: color)
+
+		updateHealth()
 
 		rotate(to: direction.angle() + Double.pi / 2)
 		targetDirection = direction
@@ -64,7 +73,15 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	public func handleHit() {
-		// TODO: Handle it
+		healthPoints -= 1
+
+		// TODO: explode or someth
+
+		updateHealth()
+
+		if healthPoints < 1 {
+			disappear()
+		}
 	}
 
 	private func move(delta: Double) {
@@ -99,6 +116,32 @@ public final class ShipCharacter: CharacterBody2D {
 		veerAngle = Double.random(in: -1...1) * Double.pi
 		targetDirection = direction.rotated(angle: veerAngle)
 		veerTime = Double.random(in: 0.5...5)
+	}
+
+	private func updateHealth() {
+		healthBar?.value = 100 * Double(healthPoints) / Double(Self.maxHealthPoints)
+		// TODO: update dmg
+	}
+
+	private func disappear() {
+		veerTimer?.stop()
+		shootTimer?.stop()
+
+		// TODO: Play an explosion or smth
+
+		let disappearTween = createTween()?
+			.tweenProperty(
+				object: self,
+				property: "modulate:a",
+				finalVal: Variant(0.0),
+				duration: 0.1
+			)?
+			.setEase(.out)?
+			.setTrans(.quad)
+
+		disappearTween?.finished.connect {
+			self.queueFree()
+		}
 	}
 }
 

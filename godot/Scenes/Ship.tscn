@@ -16,6 +16,14 @@ position = Vector2(-7.10543e-15, 8)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_gc0wq")
 
+[node name="HealthBar" type="ProgressBar" parent="."]
+offset_left = -39.0
+offset_top = 42.0
+offset_right = 39.0
+offset_bottom = 53.0
+value = 70.0
+show_percentage = false
+
 [node name="VeerTimer" type="Timer" parent="."]
 process_callback = 0
 wait_time = 2.0
