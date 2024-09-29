@@ -40,11 +40,13 @@ A silly game I made in a weekend.
   - [X] Delegate the ship veering to a `VeerStrategy` protocol.
   - [ ] Implement different strategies.
     - [X] Random.
-    - [ ] Target weakest enemy.
-    - [ ] Target strongest enemy.
+    - [X] Target weakest enemy.
+    - [X] Target strongest enemy.
     - [ ] Avoid enemies.
 - [ ] Make game end earlier.
   - [ ] Make ships take damage when game goes beyond 45-60 seconds.
+  - [ ] Add random ships periodically.
+    - [ ] Maybe previously destroyed characters can come back.
 - [ ] Persist last connected channel.
 - [ ] Connect to persisted channel on launch.
 - [ ] Add battle effects.

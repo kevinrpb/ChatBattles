@@ -14,16 +14,15 @@ public final class ShipCharacter: CharacterBody2D {
 
 	private var active: Bool = false
 
-	private var direction: Vector2 = .random().normalized()
-	private var speed: Double = 150
-
-	private let veerStrategy: VeerStrategy = RandomVeerStrategy()
+	private let veerStrategy: any VeerStrategy = VeerStrategies.random()
 
 	private var targetDirection: Vector2 = .zero
 	private var veerAngle: Double = .zero
 	private var veerTime: Double = 0.5
 
-	private var healthPoints = ShipCharacter.maxHealthPoints
+	let speed: Double = 150
+	var direction: Vector2 = .random().normalized()
+	var healthPoints = ShipCharacter.maxHealthPoints
 
 	@SceneTree(path: "CollisionShape")
 	var collisionShape: CollisionShape2D?
@@ -51,6 +50,10 @@ public final class ShipCharacter: CharacterBody2D {
 		didSet {
 			nameLabel?.text = displayName
 		}
+	}
+
+	private var shortDisplayName: String {
+		String(displayName?.prefix(8) ?? "??")
 	}
 
 	public override func _ready() {
@@ -81,6 +84,8 @@ public final class ShipCharacter: CharacterBody2D {
 			)
 		}
 		shootTimer?.start()
+
+		GD.print("[\(shortDisplayName)] Will follow strategy <\(veerStrategy.name)>.")
 	}
 
 	public override func _physicsProcess(delta: Double) {
@@ -97,6 +102,7 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	public func handleHit() {
+		GD.print("[\(shortDisplayName)] Got hit.")
 		healthPoints -= 1
 
 		// TODO: explode or someth
@@ -109,6 +115,7 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	public func destroy() {
+		GD.print("[\(shortDisplayName)] Will destroy.")
 		disappear()
 	}
 
@@ -133,7 +140,7 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	private func veer(delta: Double) {
-		guard active else { return }
+		guard active, veerAngle > 0 else { return }
 
 		let ratio = delta / veerTime
 		let angle = ratio * veerAngle
@@ -143,6 +150,10 @@ public final class ShipCharacter: CharacterBody2D {
 		// Only rotate until we reach the target (allowing for slight overshoot)
 		if direction.angleTo(newDirection).sign == veerAngle.sign {
 			setDirection(to: newDirection)
+		} else {
+			GD.print("[\(shortDisplayName)] finished veering.")
+			veerAngle = 0
+			targetDirection = direction
 		}
 	}
 
@@ -161,7 +172,7 @@ public final class ShipCharacter: CharacterBody2D {
 		let enemyShips = gameScene?.ships.values.filter { $0 != self }
 		guard let enemyShips, !enemyShips.isEmpty else {
 			GD.pushError(
-				"Ship <\(displayName ?? "?")> tried to veer but could not get the list of enemy ships."
+				"[\(shortDisplayName)] tried to veer but could not get the list of enemy ships."
 			)
 			return
 		}
@@ -171,6 +182,14 @@ public final class ShipCharacter: CharacterBody2D {
 		veerAngle = veerData.veerAngle
 		targetDirection = veerData.direction
 		veerTime = veerData.duration
+
+		GD.print(
+			String(
+				format: "[%@] Will veer by <%.2frad> over <%.2fs>.",
+				shortDisplayName,
+				veerAngle,
+				veerTime
+			))
 	}
 
 	private func updateHealth() {

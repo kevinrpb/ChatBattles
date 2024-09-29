@@ -1,6 +1,8 @@
 import SwiftGodot
 
-final class RandomVeerStrategy: VeerStrategy {
+struct RandomVeerStrategy: VeerStrategy {
+	let name = "Random"
+
 	func getVeerData(currentDirection: Vector2, ships: [ShipCharacter]) -> VeerData {
 		let veerAngle = Double.random(in: -1...1) * Double.pi / 2
 		let targetDirection = currentDirection.rotated(angle: veerAngle)

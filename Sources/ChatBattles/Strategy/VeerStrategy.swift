@@ -7,5 +7,23 @@ public struct VeerData {
 }
 
 public protocol VeerStrategy {
+	var name: String { get }
+
+	init()
 	func getVeerData(currentDirection: Vector2, ships: [ShipCharacter]) -> VeerData
+}
+
+public struct VeerStrategies {
+	static let allStrategies: [any VeerStrategy.Type] = [
+		WeakestEnemyVeerStrategy.self,
+		StrongestEnemyVeerStrategy.self,
+	]
+
+	static func random() -> any VeerStrategy {
+		guard let strat = allStrategies.randomElement() else {
+			fatalError("No strategies to choose from!")
+		}
+
+		return strat.init()
+	}
 }
