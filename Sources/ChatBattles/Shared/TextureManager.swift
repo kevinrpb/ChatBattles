@@ -34,6 +34,13 @@ public final class TextureManager {
 			return texture
 		}
 
+		var path = path
+		if !path.hasSuffix(".png") {
+			GD.pushWarning(
+				"Forgot to add file extension to texture with path <\(path)>. Will use PNG.")
+			path = "\(path).png"
+		}
+
 		let resourcePath = "res://Assets/\(path)"
 		let resource = ResourceLoader.load(path: resourcePath)
 
@@ -48,47 +55,15 @@ public final class TextureManager {
 
 // MARK: Ships
 
-private extension TextureManager {
-	static let shipTexturePaths: [ShipType: [ShipColor: String]] = [
-		.one: [
-			.red: "Ships/playerShip1_red.png"
-		],
-		.two: [
-			.red: "Ships/playerShip2_red.png"
-		],
-		.three: [
-			.red: "Ships/playerShip3_red.png"
-		]
-	]
-
-	static let shipDamageTexturePaths: [ShipType: [ShipDamage: String]] = [
-		.one: [
-			.one: "Damage/playerShip1_damage1.png",
-			.two: "Damage/playerShip1_damage2.png",
-			.three: "Damage/playerShip1_damage3.png",
-		],
-		.two: [
-			.one: "Damage/playerShip2_damage1.png",
-			.two: "Damage/playerShip2_damage2.png",
-			.three: "Damage/playerShip2_damage3.png",
-		],
-		.three: [
-			.one: "Damage/playerShip3_damage1.png",
-			.two: "Damage/playerShip3_damage2.png",
-			.three: "Damage/playerShip3_damage3.png",
-		]
-	]
-}
-
-public extension TextureManager {
-	static func shipTexture(type: ShipType, color: ShipColor) -> Texture2D {
-		let path = shipTexturePaths[type]![color]!
+extension TextureManager {
+	public static func shipTexture(type: ShipType, color: ShipColor) -> Texture2D {
+		let path = "Ships/playerShip\(type.rawValue)_\(color.rawValue).png"
 
 		return loadTexture(from: path)
 	}
 
-	static func shipDamageTexture(type: ShipType, damage: ShipDamage) -> Texture2D {
-		let path = shipDamageTexturePaths[type]![damage]!
+	public static func shipDamageTexture(type: ShipType, damage: ShipDamage) -> Texture2D {
+		let path = "Damage/playerShip\(type.rawValue)_damage\(damage.rawValue).png"
 
 		return loadTexture(from: path)
 	}
@@ -96,29 +71,10 @@ public extension TextureManager {
 
 // MARK: Laser
 
-private extension TextureManager {
-	static let laserTexturePaths: [LaserType: [LaserColor: String]] = [
-		.one: [
-			.red: "Lasers/laserRed01.png",
-			.green: "Lasers/laserGreen01.png",
-			.blue: "Lasers/laserBlue01.png"
-		],
-		.two: [
-			.red: "Lasers/laserRed02.png",
-			.green: "Lasers/laserGreen02.png",
-			.blue: "Lasers/laserBlue02.png"
-		],
-		.three: [
-			.red: "Lasers/laserRed03.png",
-			.green: "Lasers/laserGreen03.png",
-			.blue: "Lasers/laserBlue03.png"
-		]
-	]
-}
-
-public extension TextureManager {
-	static func laserTexture(type: LaserType, color: LaserColor) -> Texture2D {
-		let path = laserTexturePaths[type]![color]!
+extension TextureManager {
+	public static func laserTexture(type: LaserType, color: LaserColor) -> Texture2D {
+		let path =
+			"Lasers/laser\(color.rawValue.capitalized)\(String(format: "%02d", type.rawValue)).png"
 
 		return loadTexture(from: path)
 	}
