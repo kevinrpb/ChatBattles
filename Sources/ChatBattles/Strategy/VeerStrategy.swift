@@ -7,7 +7,7 @@ public struct VeerData {
 }
 
 public protocol VeerStrategy {
-	var name: String { get }
+	var name: String { get }
 
 	init()
 	func getVeerData(currentDirection: Vector2, ships: [ShipCharacter]) -> VeerData

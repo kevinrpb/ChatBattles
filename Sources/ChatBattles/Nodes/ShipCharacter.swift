@@ -46,14 +46,10 @@ public final class ShipCharacter: CharacterBody2D {
 	var shootTimer: Timer?
 
 	var gameScene: GameScene?
-	var displayName: String! {
+	var displayName: String = Names.get() {
 		didSet {
 			nameLabel?.text = displayName
 		}
-	}
-
-	private var shortDisplayName: String {
-		String(displayName?.prefix(8) ?? "??")
 	}
 
 	public override func _ready() {
@@ -85,7 +81,9 @@ public final class ShipCharacter: CharacterBody2D {
 		}
 		shootTimer?.start()
 
-		GD.print("[\(shortDisplayName)] Will follow strategy <\(veerStrategy.name)>.")
+		nameLabel?.text = displayName
+
+		GD.print("[\(displayName)] Will follow strategy <\(veerStrategy.name)>.")
 	}
 
 	public override func _physicsProcess(delta: Double) {
@@ -102,7 +100,7 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	public func handleHit() {
-		GD.print("[\(shortDisplayName)] Got hit.")
+		GD.print("[\(displayName)] Got hit.")
 		healthPoints -= 1
 
 		// TODO: explode or someth
@@ -115,16 +113,8 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	public func destroy() {
-		GD.print("[\(shortDisplayName)] Will destroy.")
+		GD.print("[\(displayName)] Will destroy.")
 		disappear()
-	}
-
-	public func showName() {
-		nameLabel?.visible = true
-	}
-
-	public func hideName() {
-		nameLabel?.visible = false
 	}
 
 	public func setDirection(to newDirection: Vector2) {
@@ -151,7 +141,7 @@ public final class ShipCharacter: CharacterBody2D {
 		if direction.angleTo(newDirection).sign == veerAngle.sign {
 			setDirection(to: newDirection)
 		} else {
-			GD.print("[\(shortDisplayName)] finished veering.")
+			GD.print("[\(displayName)] finished veering.")
 			veerAngle = 0
 			targetDirection = direction
 		}
@@ -172,7 +162,7 @@ public final class ShipCharacter: CharacterBody2D {
 		let enemyShips = gameScene?.ships.values.filter { $0 != self }
 		guard let enemyShips, !enemyShips.isEmpty else {
 			GD.pushError(
-				"[\(shortDisplayName)] tried to veer but could not get the list of enemy ships."
+				"[\(displayName)] tried to veer but could not get the list of enemy ships."
 			)
 			return
 		}
@@ -186,7 +176,7 @@ public final class ShipCharacter: CharacterBody2D {
 		GD.print(
 			String(
 				format: "[%@] Will veer by <%.2frad> over <%.2fs>.",
-				shortDisplayName,
+				displayName,
 				veerAngle,
 				veerTime
 			))

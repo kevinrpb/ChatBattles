@@ -379,10 +379,6 @@ public final class GameScene: Node2D {
 
 		if let name {
 			ship.displayName = name
-			ship.showName()
-		} else {
-			ship.displayName = UUID().uuidString
-			ship.hideName()
 		}
 
 		if let colorHex, !colorHex.trimmingCharacters(in: .whitespaces).isEmpty {
