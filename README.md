@@ -37,9 +37,9 @@ A silly game I made in a weekend.
 
 - [ ] Add option to cancel ongoing game or game that's about to start.
 - [ ] Make ships more intelligent.
-  - [ ] Delegate the ship veering to a `VeerStrategy` protocol.
+  - [X] Delegate the ship veering to a `VeerStrategy` protocol.
   - [ ] Implement different strategies.
-    - [ ] Random.
+    - [X] Random.
     - [ ] Target weakest enemy.
     - [ ] Target strongest enemy.
     - [ ] Avoid enemies.

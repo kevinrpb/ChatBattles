@@ -22,7 +22,7 @@ public final class GameScene: Node2D {
 	private var previousState: State = .initial
 	private var currentState: State = .initial
 
-	private var ships: [String: ShipCharacter] = [:]
+	var ships: [String: ShipCharacter] = [:]
 
 	@SceneTree(path: "%TwitchManager")
 	var twitchManager: TwitchManager?

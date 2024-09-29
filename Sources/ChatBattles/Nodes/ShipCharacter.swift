@@ -17,6 +17,8 @@ public final class ShipCharacter: CharacterBody2D {
 	private var direction: Vector2 = .random().normalized()
 	private var speed: Double = 150
 
+	private let veerStrategy: VeerStrategy = RandomVeerStrategy()
+
 	private var targetDirection: Vector2 = .zero
 	private var veerAngle: Double = .zero
 	private var veerTime: Double = 0.5
@@ -156,9 +158,19 @@ public final class ShipCharacter: CharacterBody2D {
 			return
 		}
 
-		veerAngle = Double.random(in: -1...1) * Double.pi / 2
-		targetDirection = direction.rotated(angle: veerAngle)
-		veerTime = Double.random(in: 0.5...5)
+		let enemyShips = gameScene?.ships.values.filter { $0 != self }
+		guard let enemyShips, !enemyShips.isEmpty else {
+			GD.pushError(
+				"Ship <\(displayName ?? "?")> tried to veer but could not get the list of enemy ships."
+			)
+			return
+		}
+
+		let veerData = veerStrategy.getVeerData(currentDirection: direction, ships: enemyShips)
+
+		veerAngle = veerData.veerAngle
+		targetDirection = veerData.direction
+		veerTime = veerData.duration
 	}
 
 	private func updateHealth() {
