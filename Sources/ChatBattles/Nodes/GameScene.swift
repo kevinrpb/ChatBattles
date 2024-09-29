@@ -1,3 +1,4 @@
+import Foundation
 import SwiftGodot
 
 @Godot
@@ -16,6 +17,8 @@ public final class GameScene: Node2D {
 
 	private var previousState: State = .initial
 	private var currentState: State = .initial
+
+	private var ships: [String: ShipCharacter] = [:]
 
 	@SceneTree(path: "%SettingsButton")
 	var settingsButton: Button?
@@ -134,6 +137,11 @@ public final class GameScene: Node2D {
 		currentState = state
 	}
 
+	@Callable
+	func onShipWillFree(_ displayName: String) {
+		ships.removeValue(forKey: displayName)
+	}
+
 	private func uiTransition() {
 		GD.print("State transition from <\(previousState)> to <\(currentState)>")
 
@@ -179,13 +187,24 @@ public final class GameScene: Node2D {
 		addShip(at: Vector2(x: x, y: y), animate: animate)
 	}
 
-	private func addShip(at position: Vector2, animate: Bool = true) {
+	private func addShip(at position: Vector2, with name: String? = nil, animate: Bool = true) {
 		let ship = ShipCharacter.instantiate()
 
 		ship.gameScene = self
 
 		ship.position.x = position.x
 		ship.position.y = position.y
+
+		if let name {
+			ship.displayName = name
+			ship.showName()
+		} else {
+			ship.displayName = UUID().uuidString
+			ship.hideName()
+		}
+
+		ships[ship.displayName] = ship
+		ship.connect(signal: ShipCharacter.onWillFree, to: self, method: "onShipWillFree")
 
 		addChild(node: ship)
 
