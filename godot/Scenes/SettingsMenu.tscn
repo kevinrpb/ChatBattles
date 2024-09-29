@@ -1,0 +1,56 @@
+[gd_scene load_steps=3 format=3 uid="uid://c38wyybqaf62p"]
+
+[ext_resource type="Theme" uid="uid://busl05vigf3c8" path="res://Theme/KenneyUI.tres" id="1_f4hq0"]
+[ext_resource type="Texture2D" uid="uid://br188k6tq88fh" path="res://Assets/UI/cross.png" id="2_74w5g"]
+
+[node name="SettingsMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+theme = ExtResource("1_f4hq0")
+
+[node name="PanelContainer" type="PanelContainer" parent="."]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 1
+offset_right = 164.0
+offset_bottom = 100.0
+
+[node name="VBoxContainer" type="VBoxContainer" parent="PanelContainer"]
+layout_mode = 2
+theme_override_constants/separation = 20
+alignment = 1
+
+[node name="HBoxContainer" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+text = "Channel"
+
+[node name="LineEdit" type="LineEdit" parent="PanelContainer/VBoxContainer/HBoxContainer"]
+custom_minimum_size = Vector2(200, 2.08165e-12)
+layout_mode = 2
+placeholder_text = "name"
+alignment = 1
+max_length = 50
+expand_to_text_length = true
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="PanelContainer/VBoxContainer"]
+layout_mode = 2
+alignment = 1
+
+[node name="Button" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer2"]
+layout_mode = 2
+text = "Connect"
+alignment = 2
+
+[node name="TextureButton" type="TextureButton" parent="."]
+modulate = Color(0.341749, 0.344606, 0.417963, 1)
+layout_mode = 0
+offset_left = 6.0
+offset_top = 6.0
+offset_right = 27.0
+offset_bottom = 27.0
+texture_normal = ExtResource("2_74w5g")
+ignore_texture_size = true
+stretch_mode = 0

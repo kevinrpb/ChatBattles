@@ -4,13 +4,36 @@ import SwiftGodot
 public final class GameScene: Node2D {
 	private var twitchManager = TwitchManager()
 
+	@SceneTree(path: "%SettingsButton")
+	var settingsButton: Button?
+
+	@SceneTree(path: "%SettingsMenu")
+	var settingsMenu: Control?
+
 	public override func _ready() {
+		settingsButton?.pressed.connect {
+			// let _ = settingsMenu?.createTween()?
+			// .tweenProperty(object: settingsMenu, property: NodePath, finalVal: Variant, duration: Double)
+			self.settingsButton?.releaseFocus()
+			self.settingsMenu?.show()
+		}
+
 		Task {
 			do {
 				try await twitchManager.connect()
 				try await twitchManager.join("kevinrpb")
 			} catch {
 				GD.pushError("IRC Error: \(error)")
+			}
+		}
+	}
+
+	public override func _process(delta: Double) {
+		if Input.isActionJustPressed(action: "settings_toggle") {
+			if settingsMenu?.isVisibleInTree() ?? false {
+				settingsMenu?.hide()
+			} else {
+				settingsMenu?.show()
 			}
 		}
 	}
