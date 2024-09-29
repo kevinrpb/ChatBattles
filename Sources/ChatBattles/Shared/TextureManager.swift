@@ -8,7 +8,7 @@ public final class TextureManager {
 	}
 
 	public enum ShipColor: String, Equatable, CaseIterable {
-		case red
+		case red, green, blue, orange
 	}
 
 	public enum ShipDamage: Int, Equatable, CaseIterable {
