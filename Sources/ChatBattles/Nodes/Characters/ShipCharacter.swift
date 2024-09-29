@@ -19,11 +19,14 @@ public final class ShipCharacter: CharacterBody2D {
 
 	private var healthPoints = ShipCharacter.maxHealthPoints
 
-	@SceneTree(path: "Sprite")
-	var sprite: Sprite2D?
-
 	@SceneTree(path: "CollisionShape")
 	var collisionShape: CollisionShape2D?
+
+	@SceneTree(path: "ShipSprite")
+	var shipSprite: Sprite2D?
+
+	@SceneTree(path: "DamageSprite")
+	var damageSprite: Sprite2D?
 
 	@SceneTree(path: "HealthBar")
 	var healthBar: ProgressBar?
@@ -37,7 +40,7 @@ public final class ShipCharacter: CharacterBody2D {
 	var gameScene: GameScene?
 
 	public override func _ready() {
-		sprite?.texture = TextureManager.shipTexture(type: type, color: color)
+		shipSprite?.texture = TextureManager.shipTexture(type: type, color: color)
 
 		updateHealth()
 
@@ -103,8 +106,9 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	private func rotate(to newAngle: Double) {
-		sprite?.rotation = newAngle
 		collisionShape?.rotation = newAngle
+		shipSprite?.rotation = newAngle
+		damageSprite?.rotation = newAngle
 	}
 
 	private func startVeering() {
@@ -119,8 +123,17 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	private func updateHealth() {
-		healthBar?.value = 100 * Double(healthPoints) / Double(Self.maxHealthPoints)
-		// TODO: update dmg
+		let healthPercentage = 100 * Double(healthPoints) / Double(Self.maxHealthPoints)
+
+		healthBar?.value = healthPercentage
+
+		if healthPercentage <= 25 {
+			damageSprite?.texture = TextureManager.shipDamageTexture(type: type, damage: .three)
+		} else if healthPercentage <= 50 {
+			damageSprite?.texture = TextureManager.shipDamageTexture(type: type, damage: .two)
+		} else if healthPercentage <= 75 {
+			damageSprite?.texture = TextureManager.shipDamageTexture(type: type, damage: .one)
+		}
 	}
 
 	private func disappear() {

@@ -13,7 +13,7 @@ public final class LaserProjectile: Area2D {
 	var direction: Vector2 = .zero.normalized()
 
 	@SceneTree(path: "Sprite")
-	var sprite: Sprite2D?
+	var shipSprite: Sprite2D?
 
 	@SceneTree(path: "CollisionShape")
 	var collisionShape: CollisionShape2D?
@@ -21,8 +21,8 @@ public final class LaserProjectile: Area2D {
 	var gameScene: GameScene?
 
 	public override func _ready() {
-		sprite?.texture = TextureManager.laserTexture(type: type, color: color)
-		sprite?.rotation = direction.angle() + Double.pi / 2
+		shipSprite?.texture = TextureManager.laserTexture(type: type, color: color)
+		shipSprite?.rotation = direction.angle() + Double.pi / 2
 	}
 
 	public override func _physicsProcess(delta: Double) {

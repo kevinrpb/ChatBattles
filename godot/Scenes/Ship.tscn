@@ -8,13 +8,15 @@ height = 102.0
 
 [node name="Ship" type="ShipCharacter"]
 
-[node name="Sprite" type="Sprite2D" parent="."]
-texture = ExtResource("1_4h4q6")
-
 [node name="CollisionShape" type="CollisionShape2D" parent="."]
 position = Vector2(-7.10543e-15, 8)
 rotation = 1.5708
 shape = SubResource("CapsuleShape2D_gc0wq")
+
+[node name="ShipSprite" type="Sprite2D" parent="."]
+texture = ExtResource("1_4h4q6")
+
+[node name="DamageSprite" type="Sprite2D" parent="."]
 
 [node name="HealthBar" type="ProgressBar" parent="."]
 offset_left = -39.0

@@ -9,6 +9,12 @@ public final class TextureManager {
 		case red
 	}
 
+	public enum ShipDamage: Int, Equatable, CaseIterable {
+		case one = 1
+		case two = 2
+		case three = 3
+	}
+
 	public enum LaserType: Int, Equatable, CaseIterable {
 		case one = 1
 	}
@@ -44,11 +50,25 @@ private extension TextureManager {
 			.red: "Ships/playerShip1_red.png"
 		]
 	]
+
+	static let shipDamageTexturePaths: [ShipType: [ShipDamage: String]] = [
+		.one: [
+			.one: "Damage/playerShip1_damage1.png",
+			.two: "Damage/playerShip1_damage2.png",
+			.three: "Damage/playerShip1_damage3.png",
+		]
+	]
 }
 
 public extension TextureManager {
 	static func shipTexture(type: ShipType, color: ShipColor) -> Texture2D {
 		let path = shipTexturePaths[type]![color]!
+
+		return loadTexture(from: path)
+	}
+
+	static func shipDamageTexture(type: ShipType, damage: ShipDamage) -> Texture2D {
+		let path = shipDamageTexturePaths[type]![damage]!
 
 		return loadTexture(from: path)
 	}
