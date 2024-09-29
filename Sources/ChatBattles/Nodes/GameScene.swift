@@ -2,6 +2,20 @@ import SwiftGodot
 
 @Godot
 public final class GameScene: Node2D {
+	enum State: Int {
+		case initial
+		case joiningChat
+		case joinedChat
+		case leavingChat
+		case leftChat
+		case idle
+		case startingGame
+		case playingGame
+		case finishedGame
+	}
+
+	private var previousState: State = .initial
+	private var currentState: State = .initial
 
 	@SceneTree(path: "%SettingsButton")
 	var settingsButton: Button?
@@ -16,8 +30,6 @@ public final class GameScene: Node2D {
 	var twitchManager: TwitchManager?
 
 	public override func _ready() {
-		startGameButton?.disabled = true
-
 		settingsButton?.pressed.connect {
 			self.settingsButton?.releaseFocus()
 			self.toggleSettingsMenu()
@@ -25,17 +37,31 @@ public final class GameScene: Node2D {
 
 		settingsMenu?.connect(signal: SettingsMenu.onClose, to: self, method: "onSettingsClose")
 		settingsMenu?.connect(signal: SettingsMenu.onConnect, to: self, method: "onSettingsConnect")
-		settingsMenu?.connect(signal: SettingsMenu.onDisconnect, to: self, method: "onSettingsDisconnect")
+		settingsMenu?.connect(
+			signal: SettingsMenu.onDisconnect, to: self, method: "onSettingsDisconnect")
 
 		twitchManager?.connect(signal: TwitchManager.onJoined, to: self, method: "onChatJoined")
 		twitchManager?.connect(signal: TwitchManager.onParted, to: self, method: "onChatParted")
 		twitchManager?.connect(signal: TwitchManager.onMessage, to: self, method: "onChatMessage")
+
+		startGameButton?.pressed.connect {
+			// TODO: game!
+		}
+
+		uiTransition()
 	}
 
 	public override func _process(delta: Double) {
 		if Input.isActionJustPressed(action: "settings_toggle") {
 			toggleSettingsMenu()
 		}
+
+		guard previousState != currentState else {
+			return
+		}
+
+		uiTransition()
+		previousState = currentState
 	}
 
 	public override func _unhandledInput(event: InputEvent?) {
@@ -74,33 +100,72 @@ public final class GameScene: Node2D {
 
 	@Callable
 	func onSettingsConnect(_ channel: String) {
-		settingsMenu?.disable()
+		currentState = .joiningChat
 		connectToChat(channel)
 	}
 
 	@Callable
 	func onSettingsDisconnect() {
-		settingsMenu?.disable()
+		currentState = .leavingChat
 		disconnectFromChat()
 	}
 
 	@Callable
 	func onChatJoined(_ channel: String) {
-		settingsMenu?.enable()
-		settingsMenu?.showDisconnect()
-		startGameButton?.disabled = false
+		currentState = .joinedChat
 	}
 
 	@Callable
 	func onChatParted(_ channel: String) {
-		settingsMenu?.enable()
-		settingsMenu?.showConnect()
-		startGameButton?.disabled = true
+		currentState = .leftChat
 	}
 
 	@Callable
 	func onChatMessage(_ user: String, _ message: String) {
 		GD.pushWarning("Message from \(user)")
+	}
+
+	@Callable
+	func setState(_ stateValue: Int) {
+		guard let state = State(rawValue: stateValue) else {
+			fatalError("Tried to set state with value <\(stateValue)>, which is not recognized.")
+		}
+
+		currentState = state
+	}
+
+	private func uiTransition() {
+		GD.print("State transition from <\(previousState)> to <\(currentState)>")
+
+		switch (previousState, currentState) {
+		// Initial
+		case (_, .initial):
+			settingsMenu?.enable()
+			settingsMenu?.showConnect()
+			startGameButton?.disabled = true
+
+		// Chat
+		case (_, .joiningChat):
+			settingsMenu?.disable()
+			startGameButton?.disabled = true
+		case (.joiningChat, .joinedChat):
+			let _ = callDeferred(method: "setState", Variant(State.idle.rawValue))
+		case (_, .leavingChat):
+			settingsMenu?.disable()
+			startGameButton?.disabled = true
+		case (.leavingChat, .leftChat):
+			let _ = callDeferred(method: "setState", Variant(State.initial.rawValue))
+
+		// Idle
+		case (.joinedChat, .idle):
+			settingsMenu?.enable()
+			settingsMenu?.showDisconnect()
+			startGameButton?.disabled = false
+
+		// Unhandled, shouldn't happen
+		default:
+			fatalError("Unhandled state transition from <\(previousState)> to <\(currentState)>")
+		}
 	}
 
 	private func addShips(_ n: Int, in rect: Rect2, animate: Bool = true) {
