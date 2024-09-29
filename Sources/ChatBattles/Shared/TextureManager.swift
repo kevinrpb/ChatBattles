@@ -3,6 +3,8 @@ import SwiftGodot
 public final class TextureManager {
 	public enum ShipType: Int, Equatable, CaseIterable {
 		case one = 1
+		case two = 2
+		case three = 3
 	}
 
 	public enum ShipColor: String, Equatable, CaseIterable {
@@ -48,6 +50,12 @@ private extension TextureManager {
 	static let shipTexturePaths: [ShipType: [ShipColor: String]] = [
 		.one: [
 			.red: "Ships/playerShip1_red.png"
+		],
+		.two: [
+			.red: "Ships/playerShip2_red.png"
+		],
+		.three: [
+			.red: "Ships/playerShip3_red.png"
 		]
 	]
 
@@ -56,6 +64,16 @@ private extension TextureManager {
 			.one: "Damage/playerShip1_damage1.png",
 			.two: "Damage/playerShip1_damage2.png",
 			.three: "Damage/playerShip1_damage3.png",
+		],
+		.two: [
+			.one: "Damage/playerShip2_damage1.png",
+			.two: "Damage/playerShip2_damage2.png",
+			.three: "Damage/playerShip2_damage3.png",
+		],
+		.three: [
+			.one: "Damage/playerShip3_damage1.png",
+			.two: "Damage/playerShip3_damage2.png",
+			.three: "Damage/playerShip3_damage3.png",
 		]
 	]
 }
