@@ -2,7 +2,6 @@ import SwiftGodot
 
 @Godot
 public final class GameScene: Node2D {
-	private var twitchManager = TwitchManager()
 
 	@SceneTree(path: "%SettingsButton")
 	var settingsButton: Button?
@@ -12,6 +11,9 @@ public final class GameScene: Node2D {
 
 	@SceneTree(path: "%StartGameButton")
 	var startGameButton: Button?
+
+	@SceneTree(path: "%TwitchManager")
+	var twitchManager: TwitchManager?
 
 	public override func _ready() {
 		startGameButton?.disabled = true
@@ -23,6 +25,11 @@ public final class GameScene: Node2D {
 
 		settingsMenu?.connect(signal: SettingsMenu.onClose, to: self, method: "onSettingsClose")
 		settingsMenu?.connect(signal: SettingsMenu.onConnect, to: self, method: "onSettingsConnect")
+		settingsMenu?.connect(signal: SettingsMenu.onDisconnect, to: self, method: "onSettingsDisconnect")
+
+		twitchManager?.connect(signal: TwitchManager.onJoined, to: self, method: "onChatJoined")
+		twitchManager?.connect(signal: TwitchManager.onParted, to: self, method: "onChatParted")
+		twitchManager?.connect(signal: TwitchManager.onMessage, to: self, method: "onChatMessage")
 	}
 
 	public override func _process(delta: Double) {
@@ -71,6 +78,31 @@ public final class GameScene: Node2D {
 		connectToChat(channel)
 	}
 
+	@Callable
+	func onSettingsDisconnect() {
+		settingsMenu?.disable()
+		disconnectFromChat()
+	}
+
+	@Callable
+	func onChatJoined(_ channel: String) {
+		settingsMenu?.enable()
+		settingsMenu?.showDisconnect()
+		startGameButton?.disabled = false
+	}
+
+	@Callable
+	func onChatParted(_ channel: String) {
+		settingsMenu?.enable()
+		settingsMenu?.showConnect()
+		startGameButton?.disabled = true
+	}
+
+	@Callable
+	func onChatMessage(_ user: String, _ message: String) {
+		GD.pushWarning("Message from \(user)")
+	}
+
 	private func addShips(_ n: Int, in rect: Rect2, animate: Bool = true) {
 		for _ in 0..<n { addShip(in: rect, animate: animate) }
 	}
@@ -116,14 +148,33 @@ public final class GameScene: Node2D {
 	}
 
 	private func connectToChat(_ channel: String) {
+		guard let twitchManager else {
+			fatalError("Twitch manager not present")
+		}
+
 		GD.print("Connecting to <\(channel)>...")
 
 		Task { @MainActor in
 			do {
 				try await twitchManager.connect()
 				try await twitchManager.join(channel)
+			} catch {
+				GD.pushError("IRC Error: \(error)")
+			}
+		}
+	}
 
-				settingsMenu?.enable()
+	private func disconnectFromChat() {
+		guard let twitchManager else {
+			fatalError("Twitch manager not present")
+		}
+
+		GD.print("Disconnecting from <\(twitchManager.currentChannel ?? "?")>...")
+
+		Task { @MainActor in
+			do {
+				try await twitchManager.connect()
+				try await twitchManager.part()
 			} catch {
 				GD.pushError("IRC Error: \(error)")
 			}

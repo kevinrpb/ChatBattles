@@ -62,3 +62,6 @@ unique_name_in_owner = true
 visible = false
 z_index = 10
 layout_mode = 2
+
+[node name="TwitchManager" type="TwitchManager" parent="."]
+unique_name_in_owner = true

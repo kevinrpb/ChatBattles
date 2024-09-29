@@ -5,6 +5,7 @@ public let godotTypes: [Wrapped.Type] = [
 	ShipCharacter.self,
 	LaserProjectile.self,
 	SettingsMenu.self,
+	TwitchManager.self,
 ]
 
 #initSwiftExtension(cdecl: "swift_entry_point", types: godotTypes)

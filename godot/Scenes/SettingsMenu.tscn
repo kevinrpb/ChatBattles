@@ -44,6 +44,13 @@ layout_mode = 2
 text = "Connect"
 alignment = 2
 
+[node name="DisconnectButton" type="Button" parent="PanelContainer/VBoxContainer/HBoxContainer2"]
+unique_name_in_owner = true
+visible = false
+layout_mode = 2
+text = "Disconnect"
+alignment = 2
+
 [node name="CloseButton" type="TextureButton" parent="."]
 unique_name_in_owner = true
 modulate = Color(0.341749, 0.344606, 0.417963, 1)
