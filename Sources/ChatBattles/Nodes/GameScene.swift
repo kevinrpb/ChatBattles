@@ -205,6 +205,13 @@ public final class GameScene: Node2D {
 		}
 	}
 
+	@Callable
+	func playTheGame() {
+		for (_, ship) in ships {
+			ship.activate()
+		}
+	}
+
 	private func uiTransition() {
 		GD.print("State transition from <\(previousState)> to <\(currentState)>")
 
@@ -246,6 +253,11 @@ public final class GameScene: Node2D {
 			gameStartTimer?.start()
 
 			let _ = callDeferred(method: "clearAllShips")
+
+		// Play!
+		case (.startingGame, .playingGame):
+			gameTimerUI?.visible = false
+			let _ = callDeferred(method: "playTheGame")
 
 		// Unhandled, shouldn't happen
 		default:
