@@ -13,6 +13,8 @@ config_version=5
 config/name="ChatBattles"
 run/main_scene="res://Scenes/GameScene.tscn"
 config/features=PackedStringArray("4.2")
+boot_splash/image="res://Assets/Splash/pride-dark-c.png"
+boot_splash/minimum_display_time=1000
 
 [autoload]
 
