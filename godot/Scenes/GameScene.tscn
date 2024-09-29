@@ -9,6 +9,15 @@
 draw_center = false
 
 [node name="GameScene" type="GameScene"]
+metadata/_edit_horizontal_guides_ = [540.0]
+metadata/_edit_vertical_guides_ = [960.0]
+
+[node name="TwitchManager" type="TwitchManager" parent="."]
+unique_name_in_owner = true
+
+[node name="GameTimer" type="Timer" parent="."]
+unique_name_in_owner = true
+one_shot = true
 
 [node name="Background" type="TextureRect" parent="."]
 texture_repeat = 2
@@ -27,7 +36,10 @@ pivot_offset = Vector2(3840, 2160)
 texture = ExtResource("1_vn4q0")
 stretch_mode = 1
 
-[node name="UI" type="PanelContainer" parent="."]
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="TopLeftUI" type="PanelContainer" parent="CanvasLayer"]
+z_index = 10
 offset_left = 20.0
 offset_top = 20.0
 offset_right = 238.0
@@ -35,16 +47,16 @@ offset_bottom = 62.0
 theme = ExtResource("2_8rffr")
 theme_override_styles/panel = SubResource("StyleBoxFlat_0a44a")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="UI"]
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/TopLeftUI"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="SettingsButton" type="Button" parent="UI/HBoxContainer"]
+[node name="SettingsButton" type="Button" parent="CanvasLayer/TopLeftUI/HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(42, 42)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="UI/HBoxContainer/SettingsButton"]
+[node name="TextureRect" type="TextureRect" parent="CanvasLayer/TopLeftUI/HBoxContainer/SettingsButton"]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 0
 offset_right = 40.0
@@ -52,16 +64,67 @@ offset_bottom = 40.0
 texture = ExtResource("3_remi4")
 expand_mode = 1
 
-[node name="StartGameButton" type="Button" parent="UI/HBoxContainer"]
+[node name="StartGameButton" type="Button" parent="CanvasLayer/TopLeftUI/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Start Game"
 
-[node name="SettingsMenu" parent="UI" instance=ExtResource("2_s3imb")]
+[node name="SettingsMenu" parent="CanvasLayer/TopLeftUI" instance=ExtResource("2_s3imb")]
 unique_name_in_owner = true
 visible = false
-z_index = 10
 layout_mode = 2
 
-[node name="TwitchManager" type="TwitchManager" parent="."]
+[node name="GameTimerUI" type="Control" parent="CanvasLayer"]
 unique_name_in_owner = true
+layout_mode = 3
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -110.0
+offset_top = -114.0
+offset_right = 80.0
+offset_bottom = 95.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_8rffr")
+
+[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/GameTimerUI"]
+z_index = 10
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -97.0
+offset_top = -61.5
+offset_right = 97.0
+offset_bottom = 61.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GameTimerUI/PanelContainer"]
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 4
+alignment = 1
+
+[node name="Label" type="Label" parent="CanvasLayer/GameTimerUI/PanelContainer/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.603922, 0.686275, 1)
+theme_override_font_sizes/font_size = 36
+text = "Game will
+start in"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="TimerLabel" type="Label" parent="CanvasLayer/GameTimerUI/PanelContainer/VBoxContainer"]
+unique_name_in_owner = true
+layout_mode = 2
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_font_sizes/font_size = 42
+text = "30S"
+horizontal_alignment = 1
+vertical_alignment = 1

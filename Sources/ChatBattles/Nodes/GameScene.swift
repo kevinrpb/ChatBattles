@@ -15,12 +15,20 @@ public final class GameScene: Node2D {
 		case finishedGame
 	}
 
-	private static let maxShips = 20
+	private static let maxPlayerShips = 20
+	private static let maxRandomShips = 20
+	private static let gameStartTime = 30.0
 
 	private var previousState: State = .initial
 	private var currentState: State = .initial
 
 	private var ships: [String: ShipCharacter] = [:]
+
+	@SceneTree(path: "%TwitchManager")
+	var twitchManager: TwitchManager?
+
+	@SceneTree(path: "%GameTimer")
+	var gameStartTimer: SwiftGodot.Timer?
 
 	@SceneTree(path: "%SettingsButton")
 	var settingsButton: Button?
@@ -31,8 +39,11 @@ public final class GameScene: Node2D {
 	@SceneTree(path: "%StartGameButton")
 	var startGameButton: Button?
 
-	@SceneTree(path: "%TwitchManager")
-	var twitchManager: TwitchManager?
+	@SceneTree(path: "%GameTimerUI")
+	var gameTimerUI: Control?
+
+	@SceneTree(path: "%TimerLabel")
+	var timerLabel: Label?
 
 	public override func _ready() {
 		settingsButton?.pressed.connect {
@@ -50,7 +61,13 @@ public final class GameScene: Node2D {
 		twitchManager?.connect(signal: TwitchManager.onMessage, to: self, method: "onChatMessage")
 
 		startGameButton?.pressed.connect {
-			// TODO: game!
+			self.setStateDeferred(.startingGame)
+		}
+
+		gameStartTimer?.waitTime = Self.gameStartTime
+		gameStartTimer?.oneShot = true
+		gameStartTimer?.timeout.connect {
+			self.setStateDeferred(.playingGame)
 		}
 
 		uiTransition()
@@ -61,23 +78,16 @@ public final class GameScene: Node2D {
 			toggleSettingsMenu()
 		}
 
+		if currentState == .startingGame {
+			timerLabel?.text = "\(Int(gameStartTimer?.timeLeft ?? 0))s"
+		}
+
 		guard previousState != currentState else {
 			return
 		}
 
 		uiTransition()
 		previousState = currentState
-	}
-
-	public override func _unhandledInput(event: InputEvent?) {
-		guard
-			let event = event as? InputEventMouseButton,
-			event.pressed, !event.isEcho(), event.buttonIndex == .left
-		else {
-			return
-		}
-
-		addRandomShip(in: viewportRect)
 	}
 
 	public func shootProjectile(
@@ -127,7 +137,12 @@ public final class GameScene: Node2D {
 
 	@Callable
 	func onChatMessage(_ user: String, _ message: String) {
+		guard currentState == .startingGame else { return }
+
 		GD.pushWarning("Message from \(user)")
+
+		// TODO: Add user ship?
+		// TODO: Reponsition user ships?
 	}
 
 	@Callable
@@ -140,20 +155,24 @@ public final class GameScene: Node2D {
 	}
 
 	@Callable
-	func setupInitialShips() {
+	func clearAllShips() {
 		for (_, ship) in ships {
 			ship.destroy()
 		}
+	}
 
-		addRandomShips(16, in: viewportRect)
+	@Callable
+	func setupRandomShips() {
+		clearAllShips()
+		addRandomShips(Self.maxRandomShips, in: viewportRect)
 	}
 
 	@Callable
 	func onShipWillFree(_ displayName: String) {
 		ships.removeValue(forKey: displayName)
 
-		if ships.count < Self.maxShips {
-			addRandomShips(Self.maxShips - ships.count, in: viewportRect)
+		if currentState == .initial, ships.count < Self.maxRandomShips {
+			addRandomShips(Self.maxRandomShips - ships.count, in: viewportRect)
 		}
 	}
 
@@ -167,19 +186,21 @@ public final class GameScene: Node2D {
 			settingsMenu?.showConnect()
 			startGameButton?.disabled = true
 
-			let _ = callDeferred(method: "setupInitialShips")
+			gameTimerUI?.visible = false
+
+			let _ = callDeferred(method: "setupRandomShips")
 
 		// Chat
 		case (_, .joiningChat):
 			settingsMenu?.disable()
 			startGameButton?.disabled = true
 		case (.joiningChat, .joinedChat):
-			let _ = callDeferred(method: "setState", Variant(State.idle.rawValue))
+			setStateDeferred(.idle)
 		case (_, .leavingChat):
 			settingsMenu?.disable()
 			startGameButton?.disabled = true
 		case (.leavingChat, .leftChat):
-			let _ = callDeferred(method: "setState", Variant(State.initial.rawValue))
+			setStateDeferred(.initial)
 
 		// Idle
 		case (.joinedChat, .idle):
@@ -187,10 +208,24 @@ public final class GameScene: Node2D {
 			settingsMenu?.showDisconnect()
 			startGameButton?.disabled = false
 
+		// Game start
+		case (.idle, .startingGame):
+			settingsMenu?.disable()
+			startGameButton?.disabled = true
+
+			gameTimerUI?.visible = true
+			gameStartTimer?.start()
+
+			let _ = callDeferred(method: "clearAllShips")
+
 		// Unhandled, shouldn't happen
 		default:
 			fatalError("Unhandled state transition from <\(previousState)> to <\(currentState)>")
 		}
+	}
+
+	private func setStateDeferred(_ state: State) {
+		let _ = callDeferred(method: "setState", Variant(state.rawValue))
 	}
 
 	private func addRandomShips(_ n: Int, in rect: Rect2, animate: Bool = true) {

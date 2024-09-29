@@ -26,13 +26,6 @@ offset_bottom = 53.0
 value = 70.0
 show_percentage = false
 
-[node name="VeerTimer" type="Timer" parent="."]
-process_callback = 0
-wait_time = 2.0
-one_shot = true
-
-[node name="ShootTimer" type="Timer" parent="."]
-
 [node name="NameLabel" type="Label" parent="."]
 offset_left = -70.0
 offset_top = 57.0
@@ -42,3 +35,10 @@ text = "NameHere"
 horizontal_alignment = 1
 vertical_alignment = 1
 text_overrun_behavior = 3
+
+[node name="VeerTimer" type="Timer" parent="."]
+process_callback = 0
+wait_time = 2.0
+one_shot = true
+
+[node name="ShootTimer" type="Timer" parent="."]
