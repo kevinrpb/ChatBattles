@@ -90,6 +90,21 @@ public final class GameScene: Node2D {
 		previousState = currentState
 	}
 
+	public override func _unhandledInput(event: InputEvent?) {
+		guard
+			currentState == .startingGame,
+			let event = event as? InputEventMouseButton,
+			event.pressed,
+			!event.isEcho(),
+			event.buttonIndex == .left
+		else {
+			return
+		}
+
+		addShip(at: viewportRect.getCenter())
+		repositionShipsInCircle()
+	}
+
 	public func shootProjectile(
 		from ship: ShipCharacter,
 		direction: Vector2,
@@ -136,13 +151,19 @@ public final class GameScene: Node2D {
 	}
 
 	@Callable
-	func onChatMessage(_ user: String, _ message: String) {
-		guard currentState == .startingGame else { return }
+	func onChatMessage(_ displayName: String, _ message: String) {
+		guard
+			currentState == .startingGame,
+			let firstWord = message.split(separator: " ").first?.trimmingCharacters(
+				in: .whitespaces),
+			["!join", "join"].contains(firstWord),
+			ships.count < Self.maxPlayerShips
+		else { return }
 
-		GD.pushWarning("Message from \(user)")
+		GD.pushWarning("Joining user <\(displayName)>")
 
-		// TODO: Add user ship?
-		// TODO: Reponsition user ships?
+		addShip(at: viewportRect.getCenter(), named: displayName, activate: false)
+		repositionShipsInCircle()
 	}
 
 	@Callable
@@ -241,7 +262,7 @@ public final class GameScene: Node2D {
 
 	private func addShip(
 		at position: Vector2,
-		with name: String? = nil,
+		named name: String? = nil,
 		activate: Bool = false,
 		animate: Bool = true
 	) {
@@ -267,6 +288,21 @@ public final class GameScene: Node2D {
 
 		if animate { animateIn(ship) }
 		if activate { ship.activate() }
+	}
+
+	private func repositionShipsInCircle() {
+		let center = viewportRect.getCenter()
+		let radius = 400
+		let angleDelta = 2 * Double.pi / Double(ships.count)
+
+		var direction = Vector2(x: 0, y: -1).normalized()
+
+		for (_, ship) in ships {
+			ship.setDirection(to: direction)
+			ship.position = center + direction * radius
+
+			direction = direction.rotated(angle: angleDelta).normalized()
+		}
 	}
 
 	private func animateIn(_ node: Node2D, duration: Double = 1.0) {

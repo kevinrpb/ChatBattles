@@ -118,6 +118,11 @@ public final class ShipCharacter: CharacterBody2D {
 		nameLabel?.visible = false
 	}
 
+	public func setDirection(to newDirection: Vector2) {
+		direction = newDirection
+		rotate(to: newDirection.angle() + Double.pi / 2)
+	}
+
 	private func move(delta: Double) {
 		guard active else { return }
 
@@ -135,8 +140,7 @@ public final class ShipCharacter: CharacterBody2D {
 
 		// Only rotate until we reach the target (allowing for slight overshoot)
 		if direction.angleTo(newDirection).sign == veerAngle.sign {
-			direction = newDirection
-			rotate(to: newDirection.angle() + Double.pi / 2)
+			setDirection(to: newDirection)
 		}
 	}
 
