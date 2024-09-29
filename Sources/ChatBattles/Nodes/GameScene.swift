@@ -17,7 +17,7 @@ public final class GameScene: Node2D {
 
 	private static let maxPlayerShips = 20
 	private static let maxRandomShips = 20
-	private static let gameStartTime = 30.0
+	private static let gameStartTime = 20.0
 
 	private var previousState: State = .initial
 	private var currentState: State = .initial
@@ -45,6 +45,12 @@ public final class GameScene: Node2D {
 	@SceneTree(path: "%TimerLabel")
 	var timerLabel: Label?
 
+	@SceneTree(path: "%MidLayer")
+	var midLayer: CanvasLayer?
+
+	@SceneTree(path: "%WinnerUI")
+	var winnerUI: Control?
+
 	public override func _ready() {
 		settingsButton?.pressed.connect {
 			self.settingsButton?.releaseFocus()
@@ -67,7 +73,11 @@ public final class GameScene: Node2D {
 		gameStartTimer?.waitTime = Self.gameStartTime
 		gameStartTimer?.oneShot = true
 		gameStartTimer?.timeout.connect {
-			self.setStateDeferred(.playingGame)
+			switch self.ships.count {
+			case 0: self.setStateDeferred(.idle)
+			case 1: self.setStateDeferred(.finishedGame)
+			default: self.setStateDeferred(.playingGame)
+			}
 		}
 
 		uiTransition()
@@ -119,7 +129,7 @@ public final class GameScene: Node2D {
 		projectile.position = ship.position
 		projectile.direction = direction
 
-		addChild(node: projectile)
+		midLayer!.addChild(node: projectile)
 		animateIn(projectile, duration: 0.2)
 	}
 
@@ -203,6 +213,14 @@ public final class GameScene: Node2D {
 		if currentState == .initial, ships.count < Self.maxRandomShips {
 			addRandomShips(Self.maxRandomShips - ships.count, in: viewportRect)
 		}
+
+		if currentState == .playingGame, ships.count < 2 {
+			for (_, ship) in ships {
+				ship.deactivate()
+			}
+
+			setStateDeferred(.finishedGame)
+		}
 	}
 
 	@Callable
@@ -223,6 +241,7 @@ public final class GameScene: Node2D {
 			startGameButton?.disabled = true
 
 			gameTimerUI?.visible = false
+			winnerUI?.visible = false
 
 			let _ = callDeferred(method: "setupRandomShips")
 
@@ -239,15 +258,22 @@ public final class GameScene: Node2D {
 			setStateDeferred(.initial)
 
 		// Idle
-		case (.joinedChat, .idle):
+		case (.joinedChat, .idle),
+			 (.startingGame, .idle):
 			settingsMenu?.enable()
 			settingsMenu?.showDisconnect()
 			startGameButton?.disabled = false
+			winnerUI?.visible = false
+
+			gameTimerUI?.visible = false
+			winnerUI?.visible = false
 
 		// Game start
-		case (.idle, .startingGame):
+		case (.idle, .startingGame),
+			(.finishedGame, .startingGame):
 			settingsMenu?.disable()
 			startGameButton?.disabled = true
+			winnerUI?.visible = false
 
 			gameTimerUI?.visible = true
 			gameStartTimer?.start()
@@ -258,6 +284,26 @@ public final class GameScene: Node2D {
 		case (.startingGame, .playingGame):
 			gameTimerUI?.visible = false
 			let _ = callDeferred(method: "playTheGame")
+
+		// Game end
+		case (.startingGame, .finishedGame),
+			(.playingGame, .finishedGame):
+			settingsMenu?.enable()
+			gameTimerUI?.visible = false
+			winnerUI?.visible = true
+			startGameButton?.disabled = false
+
+			if let (_, winnerShip) = ships.first {
+				winnerShip.setDirection(to: Vector2(x: 0, y: -1))
+				winnerShip.position = viewportRect.getCenter()
+				// TODO: Calculate this somehow
+				// winnerShip.position.x -= 16
+				winnerShip.position.y += 16
+			} else {
+				// TODO: Change the label to "No one won"
+				// This is super rare because it would imply that two ships were
+				// destroyed in the same frame...
+			}
 
 		// Unhandled, shouldn't happen
 		default:
@@ -296,6 +342,8 @@ public final class GameScene: Node2D {
 
 		ship.gameScene = self
 
+		ship.zIndex = 5  // Below most ui, above winner pannel
+		ship.zAsRelative = false
 		ship.position.x = position.x
 		ship.position.y = position.y
 
@@ -319,7 +367,7 @@ public final class GameScene: Node2D {
 		ships[ship.displayName] = ship
 		ship.connect(signal: ShipCharacter.onWillFree, to: self, method: "onShipWillFree")
 
-		addChild(node: ship)
+		midLayer!.addChild(node: ship)
 
 		if animate { animateIn(ship) }
 		if activate { ship.activate() }

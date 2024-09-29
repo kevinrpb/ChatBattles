@@ -36,9 +36,48 @@ pivot_offset = Vector2(3840, 2160)
 texture = ExtResource("1_vn4q0")
 stretch_mode = 1
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
+[node name="BackLayer" type="CanvasLayer" parent="."]
+layer = 0
 
-[node name="TopLeftUI" type="PanelContainer" parent="CanvasLayer"]
+[node name="WinnerUI" type="PanelContainer" parent="BackLayer"]
+unique_name_in_owner = true
+z_index = 2
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -180.0
+offset_top = -158.0
+offset_right = 148.0
+offset_bottom = 128.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("2_8rffr")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="BackLayer/WinnerUI"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="BackLayer/WinnerUI/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(0.6, 0.603922, 0.686275, 1)
+theme_override_font_sizes/font_size = 36
+text = "The winner
+is"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CenterContainer" type="CenterContainer" parent="BackLayer/WinnerUI/VBoxContainer"]
+custom_minimum_size = Vector2(2.08165e-12, 150)
+layout_mode = 2
+
+[node name="MidLayer" type="CanvasLayer" parent="."]
+unique_name_in_owner = true
+
+[node name="TopLayer" type="CanvasLayer" parent="."]
+layer = 2
+
+[node name="TopLeftUI" type="PanelContainer" parent="TopLayer"]
 z_index = 10
 offset_left = 20.0
 offset_top = 20.0
@@ -47,16 +86,16 @@ offset_bottom = 62.0
 theme = ExtResource("2_8rffr")
 theme_override_styles/panel = SubResource("StyleBoxFlat_0a44a")
 
-[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/TopLeftUI"]
+[node name="HBoxContainer" type="HBoxContainer" parent="TopLayer/TopLeftUI"]
 layout_mode = 2
 theme_override_constants/separation = 12
 
-[node name="SettingsButton" type="Button" parent="CanvasLayer/TopLeftUI/HBoxContainer"]
+[node name="SettingsButton" type="Button" parent="TopLayer/TopLeftUI/HBoxContainer"]
 unique_name_in_owner = true
 custom_minimum_size = Vector2(42, 42)
 layout_mode = 2
 
-[node name="TextureRect" type="TextureRect" parent="CanvasLayer/TopLeftUI/HBoxContainer/SettingsButton"]
+[node name="TextureRect" type="TextureRect" parent="TopLayer/TopLeftUI/HBoxContainer/SettingsButton"]
 modulate = Color(0, 0, 0, 1)
 layout_mode = 0
 offset_right = 40.0
@@ -64,18 +103,19 @@ offset_bottom = 40.0
 texture = ExtResource("3_remi4")
 expand_mode = 1
 
-[node name="StartGameButton" type="Button" parent="CanvasLayer/TopLeftUI/HBoxContainer"]
+[node name="StartGameButton" type="Button" parent="TopLayer/TopLeftUI/HBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 text = "Start Game"
 
-[node name="SettingsMenu" parent="CanvasLayer/TopLeftUI" instance=ExtResource("2_s3imb")]
+[node name="SettingsMenu" parent="TopLayer/TopLeftUI" instance=ExtResource("2_s3imb")]
 unique_name_in_owner = true
 visible = false
 layout_mode = 2
 
-[node name="GameTimerUI" type="Control" parent="CanvasLayer"]
+[node name="GameTimerUI" type="Control" parent="TopLayer"]
 unique_name_in_owner = true
+visible = false
 layout_mode = 3
 anchors_preset = 8
 anchor_left = 0.5
@@ -90,7 +130,7 @@ grow_horizontal = 2
 grow_vertical = 2
 theme = ExtResource("2_8rffr")
 
-[node name="PanelContainer" type="PanelContainer" parent="CanvasLayer/GameTimerUI"]
+[node name="PanelContainer" type="PanelContainer" parent="TopLayer/GameTimerUI"]
 z_index = 10
 layout_mode = 1
 anchors_preset = 8
@@ -105,13 +145,13 @@ offset_bottom = 61.5
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer/GameTimerUI/PanelContainer"]
+[node name="VBoxContainer" type="VBoxContainer" parent="TopLayer/GameTimerUI/PanelContainer"]
 layout_mode = 2
 size_flags_horizontal = 4
 size_flags_vertical = 4
 alignment = 1
 
-[node name="Label" type="Label" parent="CanvasLayer/GameTimerUI/PanelContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="TopLayer/GameTimerUI/PanelContainer/VBoxContainer"]
 layout_mode = 2
 theme_override_colors/font_color = Color(0.6, 0.603922, 0.686275, 1)
 theme_override_font_sizes/font_size = 36
@@ -120,7 +160,7 @@ start in"
 horizontal_alignment = 1
 vertical_alignment = 1
 
-[node name="TimerLabel" type="Label" parent="CanvasLayer/GameTimerUI/PanelContainer/VBoxContainer"]
+[node name="TimerLabel" type="Label" parent="TopLayer/GameTimerUI/PanelContainer/VBoxContainer"]
 unique_name_in_owner = true
 layout_mode = 2
 theme_override_colors/font_color = Color(0, 0, 0, 1)
