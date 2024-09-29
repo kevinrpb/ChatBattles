@@ -56,4 +56,6 @@ A silly game I made in a weekend.
 
 ## Credits
 
+- This game is possible thanks to [@migueldeicaza](https://github.com/migueldeicaza)'s [SwiftGodot](https://github.com/migueldeicaza/SwiftGodot).
+- Twitch integration is done with [swift-twitch-client](https://github.com/LosFarmosCTL/swift-twitch-client) and [TwitchIRC](https://github.com/MahdiBM/TwitchIRC).
 - All assets used in the game were created by [Kenney](https://kenney.nl/) and licensed under CC0.
