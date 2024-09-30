@@ -59,3 +59,4 @@ A silly game I made in a weekend.
 - This game is possible thanks to [@migueldeicaza](https://github.com/migueldeicaza)'s [SwiftGodot](https://github.com/migueldeicaza/SwiftGodot).
 - Twitch integration is done with [swift-twitch-client](https://github.com/LosFarmosCTL/swift-twitch-client) and [TwitchIRC](https://github.com/MahdiBM/TwitchIRC).
 - All assets used in the game were created by [Kenney](https://kenney.nl/) and licensed under CC0.
+- App icon generated with [icon.kitchen](https://icon.kitchen/i/H4sIAAAAAAAAAzWOMQ%2FCIBCF%2F8u5dqmRDt2Nk5PdjMMVDtoUioGiMQ3%2F3YOk4%2Fvuy7u3wwdtogj9DgrDMkzkCPotJGpAm%2BH35gSzQ0NQwB3jAr1GG%2Bv9IdHOq2FF0rpRqM5Va5IbV0KcUPkvw%2FFoMgHVzGpltyPwc%2BmtDy0bJyFa7DoWKjoXhFKMYxmAq7FccxE5N%2BC8SrZMf4JD6SO88h%2BPyYXGzwAAAA%3D%3D).
