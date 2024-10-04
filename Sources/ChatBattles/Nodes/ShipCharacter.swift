@@ -90,7 +90,9 @@ public final class ShipCharacter: CharacterBody2D {
 		veerTimer?.start()
 
 		shootTimer?.timeout.connect { [weak self] in
-			guard let self, self.active else { return }
+			guard let self else {
+				return
+			}
 
 			self.shoot()
 			self.shootTimer?.waitTime = Double.random(in: Self.shootTimerRange)
@@ -122,6 +124,8 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	public func shoot() {
+		guard active else { return }
+
 		self.gameScene?.shootProjectile(
 			from: self,
 			direction: self.direction,
