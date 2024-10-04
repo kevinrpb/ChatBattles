@@ -47,8 +47,8 @@ A silly game I made in a weekend.
   - [ ] Make ships take damage when game goes beyond 45-60 seconds.
   - [ ] Add random ships periodically.
     - [ ] Maybe previously destroyed characters can come back.
-- [ ] Persist last connected channel.
-- [ ] Connect to persisted channel on launch.
+- [X] Persist last connected channel.
+- [X] Connect to persisted channel on launch.
 - [ ] Add battle effects.
   - [ ] Explosions on hit.
   - [ ] Big explosion when ship is destroyed.

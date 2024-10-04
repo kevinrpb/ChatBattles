@@ -108,6 +108,10 @@ public final class GameScene: Node2D {
 		}
 
 		uiTransition()
+
+		if GameSettings.channel.count >= 3 {
+			_ = callDeferred(method: "onSettingsConnect", .init(GameSettings.channel))
+		}
 	}
 
 	public override func _process(delta: Double) {
