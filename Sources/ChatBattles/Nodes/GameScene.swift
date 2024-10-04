@@ -64,12 +64,13 @@ public final class GameScene: Node2D {
 	var githubButton: Button?
 
 	public override func _ready() {
-		settingsMenu?.hide()
-
 		settingsButton?.pressed.connect {
 			self.settingsButton?.releaseFocus()
 			self.toggleSettingsMenu()
 		}
+
+		settingsMenu?.hide()
+		settingsMenu?.channelText?.text = GameSettings.channel
 
 		settingsMenu?.connect(signal: SettingsMenu.onClose, to: self, method: "onSettingsClose")
 		settingsMenu?.connect(signal: SettingsMenu.onConnect, to: self, method: "onSettingsConnect")
@@ -170,6 +171,8 @@ public final class GameScene: Node2D {
 
 	@Callable
 	func onSettingsConnect(_ channel: String) {
+		GameSettings.channel = channel
+
 		currentState = .joiningChat
 		connectToChat(channel)
 	}
@@ -289,7 +292,7 @@ public final class GameScene: Node2D {
 
 		// Idle
 		case (.joinedChat, .idle),
-			 (.startingGame, .idle):
+			(.startingGame, .idle):
 			settingsMenu?.enable()
 			settingsMenu?.showDisconnect()
 			startGameButton?.disabled = false
