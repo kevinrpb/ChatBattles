@@ -199,7 +199,7 @@ public final class ShipCharacter: CharacterBody2D {
 			return
 		}
 
-		let veerData = veerStrategy.getVeerData(currentDirection: direction, ships: enemyShips)
+		let veerData = veerStrategy.getVeerData(for: self, ships: enemyShips)
 
 		veerAngle = veerData.veerAngle
 		targetDirection = veerData.direction

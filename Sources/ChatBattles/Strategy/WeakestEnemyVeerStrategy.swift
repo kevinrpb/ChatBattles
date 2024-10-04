@@ -3,7 +3,7 @@ import SwiftGodot
 struct WeakestEnemyVeerStrategy: VeerStrategy {
 	let name = "WeakestEnemy"
 
-	func getVeerData(currentDirection: Vector2, ships: [ShipCharacter]) -> VeerData {
+	func getVeerData(for ship: ShipCharacter, ships: [ShipCharacter]) -> VeerData {
 		let weakest = ships.min { shipA, shipB in
 			shipA.healthPoints < shipB.healthPoints
 		}
@@ -19,8 +19,8 @@ struct WeakestEnemyVeerStrategy: VeerStrategy {
 		let targetPosition = weakest.position + weakest.direction * weakest.speed * veerTime
 
 		// Calculate our veering to be pointing there when they arrive
-		let veerAngle = currentDirection.angleToPoint(to: targetPosition)
-		let targetDirection = currentDirection.rotated(angle: veerAngle)
+		let veerAngle = ship.direction.angleToPoint(to: targetPosition)
+		let targetDirection = ship.direction.rotated(angle: veerAngle)
 
 		return .init(veerAngle: veerAngle, direction: targetDirection, duration: veerTime)
 	}
