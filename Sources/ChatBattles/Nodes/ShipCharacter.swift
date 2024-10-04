@@ -86,6 +86,7 @@ public final class ShipCharacter: CharacterBody2D {
 			self.veerTimer?.waitTime = self.veerTime
 			self.veerTimer?.start()
 		}
+		veerTimer?.oneShot = true
 		veerTimer?.start()
 
 		shootTimer?.timeout.connect { [weak self] in
@@ -185,8 +186,8 @@ public final class ShipCharacter: CharacterBody2D {
 	}
 
 	private func startVeering() {
-		guard active, Bool.random() else {
-			veerTime = Double.random(in: 0.5...2)
+		guard active else {
+			veerTime = 1.0  // Wait at least 1 second before checking again
 			return
 		}
 
