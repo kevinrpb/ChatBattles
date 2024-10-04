@@ -1,10 +1,12 @@
-[gd_scene load_steps=3 format=3 uid="uid://dxt0phrtpgq3r"]
+[gd_scene load_steps=4 format=3 uid="uid://dxt0phrtpgq3r"]
 
 [ext_resource type="Texture2D" uid="uid://hsyutrr8m7id" path="res://Assets/Ships/playerShip1_red.png" id="1_4h4q6"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_gc0wq"]
 radius = 23.0
 height = 102.0
+
+[sub_resource type="AudioStreamPolyphonic" id="AudioStreamPolyphonic_rm1if"]
 
 [node name="Ship" type="ShipCharacter"]
 
@@ -37,8 +39,15 @@ vertical_alignment = 1
 text_overrun_behavior = 3
 
 [node name="VeerTimer" type="Timer" parent="."]
-process_callback = 0
-wait_time = 2.0
-one_shot = true
 
 [node name="ShootTimer" type="Timer" parent="."]
+
+[node name="LaserSFXPlayer" type="AudioStreamPlayer2D" parent="."]
+volume_db = -15.0
+bus = &"SFX"
+
+[node name="ImpactSFXPlayer" type="AudioStreamPlayer2D" parent="."]
+stream = SubResource("AudioStreamPolyphonic_rm1if")
+volume_db = -5.0
+max_polyphony = 32
+bus = &"SFX"

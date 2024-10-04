@@ -5,12 +5,22 @@ public final class ShipCharacter: CharacterBody2D {
 	#signal("onWillFree", arguments: ["displayName": String.self])
 
 	private static let maxHealthPoints = 6
+	private static let shootTimerRange: ClosedRange<Double> = 0.5...1.2
 
 	private let type: TextureManager.ShipType = .random()
 	private let color: TextureManager.ShipColor = .random()
 
 	private var laserType: TextureManager.LaserType = .random()
 	private var laserColor: TextureManager.LaserColor = .random()
+
+	private var laserAudioVariation: SoundManager.LaserVariation = .random()
+	private var impactAudioPool: [SoundManager.ImpactVariation] = [
+		.random(),
+		.random(),
+		.random(),
+		.random(),
+		.random(),
+	]
 
 	private var active: Bool = false
 
@@ -45,6 +55,15 @@ public final class ShipCharacter: CharacterBody2D {
 	@SceneTree(path: "ShootTimer")
 	var shootTimer: Timer?
 
+	@SceneTree(path: "LaserSFXPlayer")
+	var laserSFXPlayer: AudioStreamPlayer2D?
+
+	@SceneTree(path: "ImpactSFXPlayer")
+	var impactSFXPlayer: AudioStreamPlayer2D?
+	var impactStreamPlayback: AudioStreamPlaybackPolyphonic? {
+		impactSFXPlayer?.getStreamPlayback() as? AudioStreamPlaybackPolyphonic
+	}
+
 	var gameScene: GameScene?
 	var displayName: String = Names.get() {
 		didSet {
@@ -72,16 +91,18 @@ public final class ShipCharacter: CharacterBody2D {
 		shootTimer?.timeout.connect { [weak self] in
 			guard let self, self.active else { return }
 
-			self.gameScene?.shootProjectile(
-				from: self,
-				direction: self.direction,
-				type: laserType,
-				color: laserColor
-			)
+			self.shoot()
+			self.shootTimer?.waitTime = Double.random(in: Self.shootTimerRange)
+			self.shootTimer?.start()
 		}
+		shootTimer?.oneShot = true
+		shootTimer?.waitTime = Double.random(in: Self.shootTimerRange)
 		shootTimer?.start()
 
 		nameLabel?.text = displayName
+
+		laserSFXPlayer?.stream = SoundManager.laserAudio(variation: laserAudioVariation)
+		impactSFXPlayer?.play()
 
 		GD.print("[\(displayName)] Will follow strategy <\(veerStrategy.name)>.")
 	}
@@ -99,12 +120,22 @@ public final class ShipCharacter: CharacterBody2D {
 		active = false
 	}
 
+	public func shoot() {
+		self.gameScene?.shootProjectile(
+			from: self,
+			direction: self.direction,
+			type: laserType,
+			color: laserColor
+		)
+		laserSFXPlayer?.play()
+	}
+
 	public func handleHit() {
 		GD.print("[\(displayName)] Got hit.")
 		healthPoints -= 1
 
-		// TODO: explode or someth
-
+		_ = impactStreamPlayback?.playStream(
+			SoundManager.impactAudio(variation: impactAudioPool.randomElement()!))
 		updateHealth()
 
 		if healthPoints < 1 {

@@ -43,16 +43,22 @@ A silly game I made in a weekend.
     - [X] Target weakest enemy.
     - [X] Target strongest enemy.
     - [ ] Avoid enemies.
-- [ ] Make game end earlier.
+- [ ] Make game end earlier. Ideas:
   - [ ] Make ships take damage when game goes beyond 45-60 seconds.
   - [ ] Add random ships periodically.
     - [ ] Maybe previously destroyed characters can come back.
 - [X] Persist last connected channel.
 - [X] Connect to persisted channel on launch.
 - [ ] Add battle effects.
-  - [ ] Explosions on hit.
+  - [X] Laser when shooting.
+  - [X] ~~Explosions~~Impacts on hit.
   - [ ] Big explosion when ship is destroyed.
-  - [ ] Music / sounds.
+  - [ ] Music / UI sounds.
+
+### Bugs
+- [ ] Ships seem to prefer turning right always.
+- [ ] GameScene should check in `_process` if there is only one ship left to end the game in the rare event that two ships die in the same frame (I saw this happen).
+
 
 ## Credits
 
