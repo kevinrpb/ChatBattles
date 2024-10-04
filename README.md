@@ -42,6 +42,7 @@ A silly game I made in a weekend.
     - [X] Random.
     - [X] Target weakest enemy.
     - [X] Target strongest enemy.
+    - [ ] Target closest enemy.
     - [ ] Avoid enemies.
 - [ ] Make game end earlier. Ideas:
   - [ ] Make ships take damage when game goes beyond 45-60 seconds.
@@ -57,7 +58,7 @@ A silly game I made in a weekend.
 
 ### Bugs
 - [ ] Ships seem to prefer turning right always.
-- [ ] GameScene should check in `_process` if there is only one ship left to end the game in the rare event that two ships die in the same frame (I saw this happen).
+- [ ] Veer strategies should check the viewport to prevent ships from flying outside the screen.
 
 
 ## Credits

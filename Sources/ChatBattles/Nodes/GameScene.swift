@@ -127,6 +127,11 @@ public final class GameScene: Node2D {
 			timerLabel?.text = "\(Int(gameStartTimer?.timeLeft ?? 0))s"
 		}
 
+		if currentState == .playingGame, ships.count < 2 {
+			// Simulate a ship being destroyed to trigger game ending
+			onShipWillFree("")
+		}
+
 		guard previousState != currentState else {
 			return
 		}
@@ -340,6 +345,7 @@ public final class GameScene: Node2D {
 				// TODO: Change the label to "No one won"
 				// This is super rare because it would imply that two ships were
 				// destroyed in the same frame...
+				GD.pushWarning("There was no winner")
 			}
 
 		// Unhandled, shouldn't happen
