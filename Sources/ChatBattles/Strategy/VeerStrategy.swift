@@ -1,11 +1,5 @@
 import SwiftGodot
 
-public struct VeerData {
-	let veerAngle: Double
-	let direction: Vector2
-	let duration: Double
-}
-
 public protocol VeerStrategy {
 	var name: String { get }
 
