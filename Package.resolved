@@ -1,5 +1,5 @@
 {
-  "originHash" : "2f0798d11339f542e775f082b2b8557a3bc9d052ce4ac4cef14ac0023f93d769",
+  "originHash" : "d4a72ebea98c8264d76234b9bb17de68b9a3a2dbeaa7f8ddd71815d65d233790",
   "pins" : [
     {
       "identity" : "swift-atomics",
@@ -33,8 +33,8 @@
       "kind" : "remoteSourceControl",
       "location" : "https://github.com/apple/swift-nio.git",
       "state" : {
-        "revision" : "1b33db2dea6a64d5b619b9e888175133c6d7f410",
-        "version" : "2.73.0"
+        "revision" : "665206000b8307cab5ac51203d29b0f232d7e31b",
+        "version" : "2.74.0"
       }
     },
     {
@@ -106,7 +106,7 @@
       "location" : "https://github.com/migueldeicaza/SwiftGodot",
       "state" : {
         "branch" : "main",
-        "revision" : "b77670e7b5ca0d09432a91b25ece50d2b522662a"
+        "revision" : "44b7e26fde1e84a94559d65ce3a8af1cf936d597"
       }
     },
     {
